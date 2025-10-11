@@ -1,0 +1,66 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Sandalwood Incense Sticks",
+      "category": "incense",
+      "price": 199,
+      "image": "https://via.placeholder.com/400x400/00bcd4/ffffff?text=Sandalwood+Incense",
+      "description": "Premium sandalwood incense sticks - Pack of 100. Made from pure sandalwood for authentic fragrance.",
+      "features": ["100% Natural", "Long burning", "Authentic fragrance", "Export quality"]
+    },
+    {
+      "id": 2,
+      "name": "Fresh Marigold Garlands",
+      "category": "garlands",
+      "price": 150,
+      "image": "https://via.placeholder.com/400x400/4caf50/ffffff?text=Marigold+Garland",
+      "description": "Fresh marigold flower garland - 2 meters. Perfect for temple decoration and festivals.",
+      "features": ["Fresh flowers", "2 meter length", "Traditional design", "Daily fresh supply"]
+    },
+    {
+      "id": 3,
+      "name": "Brass Ganesha Idol",
+      "category": "idols",
+      "price": 899,
+      "image": "https://via.placeholder.com/400x400/00bcd4/ffffff?text=Ganesha+Idol",
+      "description": "Handcrafted brass Ganesha statue - 6 inches. Perfect for home temple and worship.",
+      "features": ["Handcrafted brass", "6 inch height", "Traditional design", "Export finish"]
+    },
+    {
+      "id": 4,
+      "name": "Traditional Brass Diyas",
+      "category": "diyas",
+      "price": 299,
+      "image": "https://via.placeholder.com/400x400/4caf50/ffffff?text=Brass+Diyas",
+      "description": "Traditional brass oil lamps - Set of 5. Perfect for festivals and daily worship.",
+      "features": ["Set of 5 diyas", "Pure brass", "Traditional design", "Festival ready"]
+    },
+    {
+      "id": 5,
+      "name": "Complete Pooja Thali Set",
+      "category": "pooja-items",
+      "price": 599,
+      "image": "https://via.placeholder.com/400x400/00bcd4/ffffff?text=Pooja+Thali",
+      "description": "Complete brass pooja thali with all accessories included for worship rituals.",
+      "features": ["Complete set", "Brass material", "All accessories", "Ready to use"]
+    },
+    {
+      "id": 6,
+      "name": "Premium Coconuts",
+      "category": "coconuts",
+      "price": 120,
+      "image": "https://via.placeholder.com/400x400/4caf50/ffffff?text=Premium+Coconuts",
+      "description": "Premium quality coconuts for religious ceremonies - Set of 3 pieces.",
+      "features": ["Premium quality", "Set of 3", "Fresh supply", "Ceremony ready"]
+    }
+  ],
+  "categories": {
+    "incense": "Incense & Dhoop",
+    "garlands": "Garlands & Flowers",
+    "idols": "Idols & Statues",
+    "diyas": "Diyas & Lamps",
+    "pooja-items": "Pooja Items",
+    "coconuts": "Coconuts & Fruits"
+  }
+}

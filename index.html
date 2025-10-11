@@ -7,7 +7,9 @@
     <meta name="keywords" content="pooja items, hindu worship, temple accessories, diyas, garlands, incense, religious items, mandir supplies">
     <meta name="author" content="DevPooja">
     <title>DevPooja | Hindu Worship Essentials</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,13 +19,15 @@
     <header class="header">
         <nav class="nav">
             <div class="nav-logo">
-                <img src="images/logo.png" alt="The Devpooja" class="logo-img">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="The Devpooja" class="logo-img">
+                </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#products" class="nav-link">Products</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="pages/products.html" class="nav-link">Products</a></li>
+                <li><a href="pages/about.html" class="nav-link">About</a></li>
+                <li><a href="pages/contact.html" class="nav-link">Contact</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -53,31 +57,42 @@
         <section class="featured-categories">
             <div class="container">
                 <h2 class="section-title">Sacred Collections</h2>
-                <div class="categories-grid">
-                    <div class="category-card">
-                        <div class="category-icon">🪔</div>
-                        <h3>Diyas & Lamps</h3>
-                        <p>Traditional oil lamps and decorative diyas for festivals and daily worship</p>
-                        <a href="#" class="category-link">Explore</a>
+                <div class="swiper categories-swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="category-card">
+                                <div class="category-icon">🪔</div>
+                                <h3>Diyas & Lamps</h3>
+                                <p>Traditional oil lamps and decorative diyas for festivals and daily worship</p>
+                                <a href="#" class="category-link">Explore</a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="category-card">
+                                <div class="category-icon">🌸</div>
+                                <h3>Garlands & Flowers</h3>
+                                <p>Fresh and artificial flower garlands, marigold chains, and temple decorations</p>
+                                <a href="#" class="category-link">Explore</a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="category-card">
+                                <div class="category-icon">🕉</div>
+                                <h3>Idols & Statues</h3>
+                                <p>Brass, marble, and wooden deity idols for your home mandir</p>
+                                <a href="#" class="category-link">Explore</a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="category-card">
+                                <div class="category-icon">🌿</div>
+                                <h3>Incense & Dhoop</h3>
+                                <p>Premium incense sticks, dhoop, camphor, and aromatic worship essentials</p>
+                                <a href="#" class="category-link">Explore</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="category-card">
-                        <div class="category-icon">🌸</div>
-                        <h3>Garlands & Flowers</h3>
-                        <p>Fresh and artificial flower garlands, marigold chains, and temple decorations</p>
-                        <a href="#" class="category-link">Explore</a>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon">🕉</div>
-                        <h3>Idols & Statues</h3>
-                        <p>Brass, marble, and wooden deity idols for your home mandir</p>
-                        <a href="#" class="category-link">Explore</a>
-                    </div>
-                    <div class="category-card">
-                        <div class="category-icon">🌿</div>
-                        <h3>Incense & Dhoop</h3>
-                        <p>Premium incense sticks, dhoop, camphor, and aromatic worship essentials</p>
-                        <a href="#" class="category-link">Explore</a>
-                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
         </section>
@@ -85,8 +100,11 @@
         <section id="products" class="products">
             <div class="container">
                 <h2 class="section-title">Featured Products</h2>
-                <div class="products-grid" id="featured-products">
-                    <!-- Products will be loaded dynamically by JavaScript -->
+                <div class="swiper products-swiper">
+                    <div class="swiper-wrapper" id="featured-products">
+                        <!-- Products will be loaded dynamically by JavaScript -->
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
         </section>
@@ -313,10 +331,10 @@
                 <div class="footer-section">
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#products">Products</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="pages/products.html">Products</a></li>
+                        <li><a href="pages/about.html">About Us</a></li>
+                        <li><a href="pages/contact.html">Contact</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -339,11 +357,12 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 DevPooja. All rights reserved. | Crafted with devotion 🙏</p>
+                <p>&copy; 2024 DevPooja. All rights reserved. | Crafted with devotion 🙏 | Powered By Atharva</p>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/products.js"></script>
     <script>
         // Mobile menu toggle
@@ -384,13 +403,59 @@
             this.reset();
         });
 
-        // Load featured products on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Swiper sliders
+        function initializeSwiper() {
+            // Categories Swiper
+            const categoriesSwiper = new Swiper('.categories-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                pagination: {
+                    el: '.categories-swiper .swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 4,
+                        spaceBetween: 32,
+                    }
+                }
+            });
+
+            // Products Swiper
+            const productsSwiper = new Swiper('.products-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                pagination: {
+                    el: '.products-swiper .swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 32,
+                    }
+                }
+            });
+        }
+
+        // Load featured products when data is ready
+        document.addEventListener('productsLoaded', function() {
             const featuredProductsContainer = document.getElementById('featured-products');
-            if (featuredProductsContainer && typeof products !== 'undefined') {
+            if (featuredProductsContainer && products.length > 0) {
                 // Display first 6 products as featured
                 const featuredProducts = products.slice(0, 6);
                 featuredProductsContainer.innerHTML = featuredProducts.map(renderProductCard).join('');
+
+                // Initialize Swiper after products are loaded
+                setTimeout(initializeSwiper, 100);
             }
         });
     </script>
