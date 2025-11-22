@@ -1,5 +1,7 @@
 /* About Page Specific Styles */
-
+.about{
+    margin-top: 10rem;
+}
 .about-content {
     padding: 40px 0 80px;
 }

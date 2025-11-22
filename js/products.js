@@ -7,7 +7,6 @@ async function loadProductData() {
         const isInSubfolder = window.location.pathname.includes('/pages/');
         const dataPath = isInSubfolder ? '../data/products.json' : './data/products.json';
 
-        console.log('Loading from path:', dataPath);
         const response = await fetch(dataPath);
 
         if (!response.ok) {
@@ -59,23 +58,5 @@ function renderProductCard(product) {
     `;
 }
 
-// Simple cart functionality
-let cart = [];
-
-function addToCart(productId) {
-    const product = getProductById(productId);
-    if (product) {
-        cart.push(product);
-        // Update button temporarily
-        const button = event.target;
-        button.textContent = 'Added ✓';
-        button.style.backgroundColor = '#4caf50';
-        setTimeout(() => {
-            button.textContent = 'Add to Cart';
-            button.style.backgroundColor = '';
-        }, 2000);
-
-        console.log('Cart:', cart);
-    }
-}
+// Note: addToCart() function is now in cart.js
 

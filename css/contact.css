@@ -1,5 +1,7 @@
 /* Contact Page Specific Styles */
-
+.contact{
+    margin-top: 10rem;
+}
 .contact-content {
     padding: 40px 0 80px;
 }

@@ -154,12 +154,11 @@ body {
 
 .btn-secondary {
     background: transparent;
-    color: var(--primary-cyan);
-    border: 2px solid var(--primary-cyan);
+    color: var(--bg-cream);
 }
 
 .btn-secondary:hover {
-    background: var(--primary-cyan);
+    border: 2px solid var(--bg-cream);
     color: white;
 }
 

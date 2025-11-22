@@ -7,6 +7,7 @@
     <title>All Products | The Devpooja</title>
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/products.css">
+    <link rel="stylesheet" href="../css/cart.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,17 +37,11 @@
     </header>
 
     <main>
-        <section class="page-header">
-            <div class="container">
-                <h1 class="page-title">Our Products</h1>
-                <p class="page-subtitle">Discover our complete collection of authentic Hindu worship essentials</p>
-            </div>
-        </section>
-
         <section class="products-listing">
             <div class="container">
-                <div class="products-controls">
-                    <div class="filter-section">
+                <!-- Desktop Controls -->
+                <div class="products-controls desktop-controls">
+                    <div class="filter-section" id="filterSectionDesktop">
                         <h3>Filter by Category</h3>
                         <div class="filter-buttons">
                             <button class="filter-btn active" data-category="all">All Products</button>
@@ -68,13 +63,35 @@
                     <!-- Products will be loaded dynamically -->
                 </div>
 
-                <!-- Mobile Slider View -->
-                <div class="mobile-view">
-                    <div class="swiper products-mobile-swiper">
-                        <div class="swiper-wrapper" id="mobile-products">
+                <!-- Mobile Layout: Filters Left + Products Right -->
+                <div class="mobile-view mobile-layout-wrapper">
+                    <!-- Mobile Filter Sidebar -->
+                    <div class="mobile-filter-sidebar">
+                        <button class="filter-toggle-btn" id="filterToggleBtn">
+                            <span class="filter-icon">☰</span>
+                        </button>
+                        <div class="filter-section mobile-filter-section" id="filterSection">
+                            <h3>Filters</h3>
+                            <div class="filter-buttons mobile-filter-buttons">
+                                <button class="filter-btn active" data-category="all">All</button>
+                                <button class="filter-btn" data-category="incense">Incense</button>
+                                <button class="filter-btn" data-category="garlands">Garlands</button>
+                                <button class="filter-btn" data-category="idols">Idols</button>
+                                <button class="filter-btn" data-category="diyas">Diyas</button>
+                                <button class="filter-btn" data-category="pooja-items">Pooja</button>
+                                <button class="filter-btn" data-category="coconuts">Coconuts</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Products Grid -->
+                    <div class="mobile-products-container">
+                        <div class="results-info mobile-results-info">
+                            <span id="mobile-results-count">Showing all products</span>
+                        </div>
+                        <div class="mobile-products-grid" id="mobile-products">
                             <!-- Products will be loaded dynamically for mobile -->
                         </div>
-                        <div class="swiper-pagination"></div>
                     </div>
                 </div>
             </div>
@@ -122,16 +139,16 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="../js/products.js"></script>
-    <script>
-        let mobileSwiper;
-
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="../js/products.js" defer></script>
+    <script src="../js/cart.js" defer></script>
+    <script defer>
         document.addEventListener('productsLoaded', function() {
             const productsContainer = document.getElementById('all-products');
             const mobileProductsContainer = document.getElementById('mobile-products');
             const filterButtons = document.querySelectorAll('.filter-btn');
             const resultsCount = document.getElementById('results-count');
+            const mobileResultsCount = document.getElementById('mobile-results-count');
 
             // Load all products initially
             loadProducts('all');
@@ -155,14 +172,20 @@
                 if (category === 'all') {
                     productsToShow = products;
                     resultsCount.textContent = `Showing all ${products.length} products`;
+                    if (mobileResultsCount) {
+                        mobileResultsCount.textContent = `All Products (${products.length})`;
+                    }
                 } else {
                     productsToShow = getProductsByCategory(category);
                     resultsCount.textContent = `Showing ${productsToShow.length} products in ${categories[category] || category}`;
+                    if (mobileResultsCount) {
+                        mobileResultsCount.textContent = `${productsToShow.length} items`;
+                    }
                 }
 
                 if (productsToShow.length === 0) {
                     productsContainer.innerHTML = '<p class="no-products">No products found in this category.</p>';
-                    mobileProductsContainer.innerHTML = '<div class="swiper-slide"><p class="no-products">No products found in this category.</p></div>';
+                    mobileProductsContainer.innerHTML = '<p class="no-products">No products found.</p>';
                 } else {
                     // Desktop grid - horizontal card layout
                     productsContainer.innerHTML = productsToShow.map(product =>
@@ -186,72 +209,20 @@
                         </div>`
                     ).join('');
 
-                    // Mobile slider - 2 cards per slide stacked vertically
-                    const mobileSlides = [];
-                    for (let i = 0; i < productsToShow.length; i += 2) {
-                        const product1 = productsToShow[i];
-                        const product2 = productsToShow[i + 1];
-
-                        let slideContent = `<div class="swiper-slide">`;
-
-                        // First card
-                        slideContent += `
-                            <div class="mobile-card-row" data-category="${product1.category}">
-                                <div class="product-image-horizontal">
-                                    <img src="${product1.image}" alt="${product1.name}" loading="lazy">
-                                </div>
-                                <div class="product-content-horizontal">
-                                    <div class="product-info-horizontal">
-                                        <h3>${product1.name}</h3>
-                                        <p>${product1.description}</p>
-                                        <div class="product-price">₹${product1.price}</div>
-                                    </div>
-                                    <div class="product-actions">
-                                        <button class="btn btn-primary" onclick="addToCart(${product1.id})">Add to Cart</button>
-                                    </div>
-                                </div>
-                            </div>`;
-
-                        // Second card (if exists)
-                        if (product2) {
-                            slideContent += `
-                                <div class="mobile-card-row" data-category="${product2.category}">
-                                    <div class="product-image-horizontal">
-                                        <img src="${product2.image}" alt="${product2.name}" loading="lazy">
-                                    </div>
-                                    <div class="product-content-horizontal">
-                                        <div class="product-info-horizontal">
-                                            <h3>${product2.name}</h3>
-                                            <p>${product2.description}</p>
-                                            <div class="product-price">₹${product2.price}</div>
-                                        </div>
-                                        <div class="product-actions">
-                                            <button class="btn btn-primary" onclick="addToCart(${product2.id})">Add to Cart</button>
-                                        </div>
-                                    </div>
-                                </div>`;
-                        }
-
-                        slideContent += `</div>`;
-                        mobileSlides.push(slideContent);
-                    }
-
-                    mobileProductsContainer.innerHTML = mobileSlides.join('');
-
-                    // Destroy existing swiper if it exists
-                    if (mobileSwiper) {
-                        mobileSwiper.destroy(true, true);
-                    }
-
-                    // Initialize mobile swiper
-                    mobileSwiper = new Swiper('.products-mobile-swiper', {
-                        slidesPerView: 1,
-                        spaceBetween: 20,
-                        pagination: {
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        }
-                    });
+                    // Mobile grid - portrait cards
+                    mobileProductsContainer.innerHTML = productsToShow.map(product =>
+                        `<div class="mobile-product-card" data-category="${product.category}">
+                            <div class="mobile-product-image">
+                                <img src="${product.image}" alt="${product.name}" loading="lazy">
+                            </div>
+                            <div class="mobile-product-info">
+                                <h3>${product.name}</h3>
+                                <p>${product.description}</p>
+                                <div class="product-price">₹${product.price}</div>
+                                <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+                            </div>
+                        </div>`
+                    ).join('');
                 }
             }
         });
@@ -270,6 +241,29 @@
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
             }));
+        }
+
+        // Filter toggle for mobile
+        const filterToggleBtn = document.getElementById('filterToggleBtn');
+        const filterSection = document.getElementById('filterSection');
+
+        if (filterToggleBtn && filterSection) {
+            filterToggleBtn.addEventListener('click', () => {
+                filterToggleBtn.classList.toggle('active');
+                filterSection.classList.toggle('active');
+            });
+
+            // Close filter menu when a filter is selected on mobile
+            const mobileFilterButtons = document.querySelectorAll('.mobile-filter-buttons .filter-btn');
+            mobileFilterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Auto-close filter menu after selection
+                    setTimeout(() => {
+                        filterSection.classList.remove('active');
+                        filterToggleBtn.classList.remove('active');
+                    }, 300);
+                });
+            });
         }
     </script>
 </body>
