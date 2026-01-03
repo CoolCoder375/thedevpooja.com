@@ -93,6 +93,8 @@
                             </div>
                         </div>
                     </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
@@ -105,6 +107,8 @@
                     <div class="swiper-wrapper" id="featured-products">
                         <!-- Products will be loaded dynamically by JavaScript -->
                     </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
@@ -196,16 +200,6 @@
                                 <h4>Coconut Supply</h4>
                                 <p>Premium quality coconuts for religious use</p>
                             </div>
-                            <div class="service-item">
-                                <div class="service-icon">📦</div>
-                                <h4>Customized Packaging</h4>
-                                <p>Export-ready branding and bulk packaging</p>
-                            </div>
-                            <div class="service-item">
-                                <div class="service-icon">🚢</div>
-                                <h4>Shipping Solutions</h4>
-                                <p>Domestic & international logistics support</p>
-                            </div>
                         </div>
                     </div>
 
@@ -265,14 +259,14 @@
                                 <div class="contact-icon">📞</div>
                                 <div>
                                     <h4>Phone</h4>
-                                    <p>+91 9067615208</p>
+                                    <p>+91 7057307300</p>
                                 </div>
                             </div>
                             <div class="contact-method">
                                 <div class="contact-icon">📧</div>
                                 <div>
                                     <h4>Email</h4>
-                                    <p>info@thedevpooja.com</p>
+                                    <p>thedevpooja@gmail.com</p>
                                 </div>
                             </div>
                             <div class="contact-method">
@@ -335,7 +329,8 @@
                         <li><a href="index.html">Home</a></li>
                         <li><a href="pages/products.html">Products</a></li>
                         <li><a href="pages/about.html">About Us</a></li>
-                        <li><a href="pages/contact.html">Contact</a></li>
+                        <li><a href="pages/contact.html">Contat</a></li>
+                        <li><a href="pages/admin.html" class="adminHref">Admin</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -364,6 +359,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="js/config.js" defer></script>
     <script src="js/products.js" defer></script>
     <script src="js/cart.js" defer></script>
     <script defer>
@@ -411,6 +408,10 @@
             const categoriesSwiper = new Swiper('.categories-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 20,
+                navigation: {
+                    nextEl: '.categories-swiper .swiper-button-next',
+                    prevEl: '.categories-swiper .swiper-button-prev',
+                },
                 pagination: {
                     el: '.categories-swiper .swiper-pagination',
                     clickable: true,
@@ -431,6 +432,10 @@
             const productsSwiper = new Swiper('.products-swiper', {
                 slidesPerView: 1,
                 spaceBetween: 20,
+                navigation: {
+                    nextEl: '.products-swiper .swiper-button-next',
+                    prevEl: '.products-swiper .swiper-button-prev',
+                },
                 pagination: {
                     el: '.products-swiper .swiper-pagination',
                     clickable: true,
