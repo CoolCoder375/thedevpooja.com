@@ -64,25 +64,26 @@
                 </div>
 
                 <!-- Mobile Layout: Filters Left + Products Right -->
-                <div class="mobile-view mobile-layout-wrapper">
-                    <!-- Mobile Filter Sidebar -->
-                    <div class="mobile-filter-sidebar">
-                        <button class="filter-toggle-btn" id="filterToggleBtn">
-                            <span class="filter-icon">☰</span>
-                        </button>
-                        <div class="filter-section mobile-filter-section" id="filterSection">
-                            <h3>Filters</h3>
-                            <div class="filter-buttons mobile-filter-buttons">
-                                <button class="filter-btn active" data-category="all">All</button>
-                                <button class="filter-btn" data-category="incense">Incense</button>
-                                <button class="filter-btn" data-category="garlands">Garlands</button>
-                                <button class="filter-btn" data-category="idols">Idols</button>
-                                <button class="filter-btn" data-category="diyas">Diyas</button>
-                                <button class="filter-btn" data-category="pooja-items">Pooja</button>
-                                <button class="filter-btn" data-category="coconuts">Coconuts</button>
-                            </div>
+                <div class="mobile-filter-sidebar">
+                    <button class="filter-toggle-btn" id="filterToggleBtn">
+                        <span class="filter-icon">☰</span>
+                    </button>
+                    <div class="filter-section mobile-filter-section" id="filterSection">
+                        <h3>Filters</h3>
+                        <div class="filter-buttons mobile-filter-buttons">
+                            <button class="filter-btn active" data-category="all">All</button>
+                            <button class="filter-btn" data-category="incense">Incense</button>
+                            <button class="filter-btn" data-category="garlands">Garlands</button>
+                            <button class="filter-btn" data-category="idols">Idols</button>
+                            <button class="filter-btn" data-category="diyas">Diyas</button>
+                            <button class="filter-btn" data-category="pooja-items">Pooja</button>
+                            <button class="filter-btn" data-category="coconuts">Coconuts</button>
                         </div>
                     </div>
+                </div>
+                <div class="mobile-view mobile-layout-wrapper">
+                    <!-- Mobile Filter Sidebar -->
+                    
 
                     <!-- Mobile Products Grid -->
                     <div class="mobile-products-container">
@@ -140,6 +141,8 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="../js/config.js" defer></script>
     <script src="../js/products.js" defer></script>
     <script src="../js/cart.js" defer></script>
     <script defer>

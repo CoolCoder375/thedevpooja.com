@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevPooja Admin Panel</title>
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-box">
+            <h1>🔐 Admin Panel</h1>
+            <p>DevPooja E-Commerce</p>
+
+            <div class="error-message" id="loginError">
+                Invalid credentials. Please try again.
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" required placeholder="Enter username">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="Enter password">
+                </div>
+
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+
+            <p style="margin-top: 20px; font-size: 12px; color: #999; text-align: center;">
+                Default: admin / admin123
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>📊 DevPooja Admin Dashboard</h1>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+                <button class="tab-btn" onclick="switchTab('products')">📦 Products</button>
+                <button class="tab-btn" onclick="switchTab('customers')">👥 Customers</button>
+                <button class="tab-btn" onclick="switchTab('orders')">🛒 Orders</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-cards">
+                    <div class="stat-card">
+                        <h3>TOTAL PRODUCTS</h3>
+                        <div class="number" id="totalProducts">0</div>
+                        <div class="label">Active listings</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>TOTAL CUSTOMERS</h3>
+                        <div class="number" id="totalCustomers">0</div>
+                        <div class="label">Registered users</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>TOTAL ORDERS</h3>
+                        <div class="number" id="totalOrders">0</div>
+                        <div class="label">All time</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>PENDING ORDERS</h3>
+                        <div class="number" id="pendingOrders">0</div>
+                        <div class="label">Awaiting fulfillment</div>
+                    </div>
+                </div>
+
+                <h2 style="margin: 30px 0 15px;">Recent Orders</h2>
+                <div id="recentOrders">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading recent orders...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="success-message" id="productSuccess"></div>
+
+                <div class="section-header">
+                    <h2>Product Management</h2>
+                    <button class="btn-add" onclick="showProductForm()">+ Add New Product</button>
+                </div>
+
+                <!-- Product Form -->
+                <div id="productForm" class="product-form">
+                    <h3 id="formTitle">Add New Product</h3>
+
+                    <form id="productDataForm" onsubmit="saveProduct(event)">
+                        <input type="hidden" id="productId">
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Product Name *</label>
+                                <input type="text" id="productName" required>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Category *</label>
+                                <select id="productCategory" required>
+                                    <option value="">Select category</option>
+                                    <option value="incense">Incense & Dhoop</option>
+                                    <option value="garlands">Garlands & Flowers</option>
+                                    <option value="idols">Idols & Statues</option>
+                                    <option value="diyas">Diyas & Lamps</option>
+                                    <option value="pooja-items">Pooja Items</option>
+                                    <option value="coconuts">Coconuts & Fruits</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Price (₹) *</label>
+                                <input type="number" id="productPrice" required min="0" step="0.01">
+                            </div>
+
+                            <div class="form-field">
+                                <label>Quantity *</label>
+                                <input type="number" id="productQuantity" required min="0">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Description *</label>
+                                <textarea id="productDescription" required></textarea>
+                            </div>
+
+                            <div class="form-field">
+                                <label>Features (pipe-separated)</label>
+                                <input type="text" id="productFeatures" placeholder="Feature 1|Feature 2|Feature 3">
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Product Image *</label>
+                            <div class="image-upload-area" onclick="document.getElementById('productImage').click()">
+                                <p>📸 Click to upload image</p>
+                                <p style="font-size: 12px; color: #999; margin-top: 8px;">JPG, PNG, GIF (Max 10MB)</p>
+                                <input type="file" id="productImage" accept="image/*" onchange="previewImage(event)">
+                                <div class="image-preview" id="imagePreview">
+                                    <img id="previewImg" src="" alt="Preview">
+                                </div>
+                            </div>
+                            <input type="hidden" id="productImageUrl">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="hideProductForm()">Cancel</button>
+                            <button type="submit" class="btn-save" id="saveProductBtn">
+                                <span class="btn-text">Save Product</span>
+                                <span class="btn-spinner"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Products Table -->
+                <div id="productsTable">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading products...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div id="customers" class="tab-content">
+                <div class="section-header">
+                    <h2>Customer Management</h2>
+                </div>
+
+                <div id="customersTable">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading customers...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <div class="section-header">
+                    <h2>Order Management</h2>
+                </div>
+
+                <div id="ordersTable">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading orders...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2>Settings</h2>
+                <p style="color: #666; margin-top: 10px;">Configure your admin panel settings</p>
+
+                <div style="margin-top: 30px;">
+                    <h3>API Configuration</h3>
+                    <p style="color: #666; margin: 10px 0;">Configure your Google Sheets and ImgBB API keys</p>
+
+                    <div class="form-field" style="margin-top: 20px;">
+                        <label>ImgBB API Key</label>
+                        <input type="text" id="imgbbApiKey" placeholder="Enter your ImgBB API key">
+                        <p style="font-size: 12px; color: #999; margin-top: 5px;">Get your free API key from <a href="https://api.imgbb.com/" target="_blank">https://api.imgbb.com/</a></p>
+                    </div>
+
+                    <button class="btn-save" style="margin-top: 20px;" onclick="saveSettings()">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load config and products scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

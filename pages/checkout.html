@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - DevPooja</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/checkout.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-logo">
+                <a href="../index.html">
+                    <img src="../images/logo.png" alt="The Devpooja" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="products.html" class="nav-link">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="checkout-main">
+        <div class="container">
+            <h1 class="checkout-title">Checkout</h1>
+
+            <div class="checkout-grid">
+                <!-- Left Column: Customer Details & Payment -->
+                <div class="checkout-left">
+                    <!-- Customer Details Section -->
+                    <section class="checkout-section">
+                        <h2 class="section-title">
+                            <span class="section-number">1</span>
+                            Customer Details
+                        </h2>
+                        <form id="customerDetailsForm" class="checkout-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="customerName">Full Name *</label>
+                                    <input type="text" id="customerName" name="name" required placeholder="Enter your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerPhone">Phone Number *</label>
+                                    <input type="tel" id="customerPhone" name="phone" required placeholder="10-digit mobile number" pattern="[0-9]{10}">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="customerEmail">Email Address</label>
+                                    <input type="email" id="customerEmail" name="email" placeholder="your.email@example.com">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customerAddress">Delivery Address *</label>
+                                <textarea id="customerAddress" name="address" required rows="3" placeholder="House/Flat No., Street, Landmark"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="customerCity">City *</label>
+                                    <input type="text" id="customerCity" name="city" required placeholder="City">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerState">State *</label>
+                                    <input type="text" id="customerState" name="state" required placeholder="State">
+                                </div>
+                                <div class="form-group">
+                                    <label for="customerPincode">Pincode *</label>
+                                    <input type="text" id="customerPincode" name="pincode" required placeholder="6-digit pincode" pattern="[0-9]{6}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="orderNotes">Order Notes (Optional)</label>
+                                <textarea id="orderNotes" name="notes" rows="2" placeholder="Any special instructions for delivery"></textarea>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Payment Method Section -->
+                    <section class="checkout-section">
+                        <h2 class="section-title">
+                            <span class="section-number">2</span>
+                            Payment Method
+                        </h2>
+                        <div class="payment-methods" id="paymentMethods">
+                            <!-- Razorpay Option (if enabled) -->
+                            <div class="payment-method-card" data-method="razorpay" style="display: none;">
+                                <input type="radio" id="paymentRazorpay" name="paymentMethod" value="razorpay">
+                                <label for="paymentRazorpay">
+                                    <div class="payment-icon">💳</div>
+                                    <div class="payment-details">
+                                        <h3>Pay Online</h3>
+                                        <p>Cards, UPI, NetBanking, Wallets</p>
+                                        <span class="payment-badge">Instant Confirmation</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Cash on Delivery Option -->
+                            <div class="payment-method-card" data-method="cod">
+                                <input type="radio" id="paymentCOD" name="paymentMethod" value="cod" checked>
+                                <label for="paymentCOD">
+                                    <div class="payment-icon">💰</div>
+                                    <div class="payment-details">
+                                        <h3>Cash on Delivery</h3>
+                                        <p>Pay when you receive the order</p>
+                                        <span class="payment-badge">Confirm via WhatsApp</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Place Order Button -->
+                    <button type="button" id="placeOrderBtn" class="btn btn-primary btn-place-order">
+                        <span class="btn-text">Place Order</span>
+                        <span class="btn-spinner"></span>
+                    </button>
+                </div>
+
+                <!-- Right Column: Order Summary -->
+                <div class="checkout-right">
+                    <section class="order-summary">
+                        <h2>Order Summary</h2>
+                        <div id="orderItems" class="order-items">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+
+                        <div class="order-totals">
+                            <div class="total-row">
+                                <span>Subtotal</span>
+                                <span id="subtotalAmount">₹0</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Shipping</span>
+                                <span id="shippingAmount">FREE</span>
+                            </div>
+                            <div class="total-row total-final">
+                                <span>Total Amount</span>
+                                <span id="totalAmount">₹0</span>
+                            </div>
+                        </div>
+
+                        <div class="order-security">
+                            <p>🔒 Secure Checkout</p>
+                            <p class="security-note">Your information is safe and secure</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 DevPooja. All rights reserved. | Crafted with devotion 🙏</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/checkout.js"></script>
+</body>
+</html>

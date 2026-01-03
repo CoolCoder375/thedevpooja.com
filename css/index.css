@@ -566,6 +566,43 @@ main {
     border-color: var(--primary-cyan);
 }
 
+/* Swiper Navigation Arrows - Desktop Only */
+.swiper-button-next,
+.swiper-button-prev {
+    display: none; /* Hidden on mobile by default */
+}
+
+@media (min-width: 1024px) {
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: flex;
+        color: var(--primary-cyan) !important;
+        width: calc(var(--swiper-navigation-size)/ 27 * 27) !important;
+        height: 50px;
+        background: white !important;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 20px !important;
+        font-weight: bold;
+    }
+
+    .swiper-button-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .swiper-button-disabled:hover {
+        transform: none;
+        background: white;
+        color: var(--primary-cyan);
+    }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .hero-title {
@@ -602,5 +639,11 @@ main {
 
     .slogan-text {
         font-size: 1.5rem;
+    }
+
+    /* Hide swiper navigation arrows on mobile */
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: none !important;
     }
 }
