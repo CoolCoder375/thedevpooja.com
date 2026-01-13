@@ -255,6 +255,7 @@ async function saveProduct(event) {
         const description = document.getElementById('productDescription').value;
         const featuresStr = document.getElementById('productFeatures').value;
         const features = featuresStr ? featuresStr.split('|').map(f => f.trim()).filter(f => f) : [];
+        const featured = document.getElementById('productFeatured').checked;
 
         let imageUrl = document.getElementById('productImageUrl').value;
 
@@ -289,7 +290,8 @@ async function saveProduct(event) {
             quantity,
             description,
             features,
-            image: imageUrl
+            image: imageUrl,
+            featured: featured
         };
 
         btnText.textContent = 'Saving to Google Sheets...';
@@ -357,6 +359,7 @@ function loadProducts() {
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
+                    <th>Featured</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -365,6 +368,11 @@ function loadProducts() {
 
     currentProducts.forEach(product => {
         const categoryName = categories[product.category] || product.category;
+        const isFeatured = product.featured === true || product.featured === 'TRUE' || product.featured === 'true';
+        const featuredBadge = isFeatured
+            ? '<span class="status-badge status-paid">⭐ Featured</span>'
+            : '<span class="status-badge status-pending">-</span>';
+
         html += `
             <tr>
                 <td><img src="${product.image}" class="product-image-thumb" alt="${product.name}" onerror="this.src='https://via.placeholder.com/50'"></td>
@@ -372,6 +380,7 @@ function loadProducts() {
                 <td>${categoryName}</td>
                 <td>₹${product.price}</td>
                 <td>${product.quantity || 0}</td>
+                <td>${featuredBadge}</td>
                 <td>
                     <div class="action-buttons">
                         <button class="btn-edit" onclick="editProduct(${product.id})">Edit</button>
@@ -406,6 +415,7 @@ function editProduct(id) {
     document.getElementById('productDescription').value = product.description;
     document.getElementById('productFeatures').value = Array.isArray(product.features) ? product.features.join('|') : '';
     document.getElementById('productImageUrl').value = product.image;
+    document.getElementById('productFeatured').checked = product.featured === true || product.featured === 'TRUE' || product.featured === 'true';
 
     if (product.image) {
         document.getElementById('previewImg').src = product.image;
@@ -648,7 +658,7 @@ function viewOrder(index) {
 
                 <div class="order-modal-footer">
                     <button class="btn-cancel" onclick="closeOrderModal()">Close</button>
-                    <a href="https://wa.me/${RAZORPAY_CONFIG?.whatsappNumber || '919067615208'}?text=Regarding order ${order.id}"
+                    <a href="https://wa.me/91${order.phone.replace(/^0+/, '')}?text=Hello ${order.customerName}, regarding your order ${order.id}"
                        target="_blank"
                        class="btn-save">
                         Contact Customer via WhatsApp
@@ -674,25 +684,85 @@ function closeOrderModal() {
 // ==========================================
 
 function saveSettings() {
-    const imgbbKey = document.getElementById('imgbbApiKey').value;
+    const saveBtn = document.getElementById('saveSettingsBtn');
+    const btnText = saveBtn.querySelector('.btn-text');
 
-    if (imgbbKey) {
-        IMGBB_API_KEY = imgbbKey;
-        localStorage.setItem('imgbb_api_key', imgbbKey);
-        alert('Settings saved successfully!');
-    } else {
-        alert('Please enter an ImgBB API key');
+    try {
+        // Show loader and disable button
+        saveBtn.classList.add('loading');
+        saveBtn.disabled = true;
+        btnText.textContent = 'Saving...';
+
+        const imgbbKey = document.getElementById('imgbbApiKey').value;
+        const instagramUrl = document.getElementById('instagramUrl')?.value || '';
+        const facebookUrl = document.getElementById('facebookUrl')?.value || '';
+        const youtubeUrl = document.getElementById('youtubeUrl')?.value || '';
+
+        // Save ImgBB API key
+        if (imgbbKey) {
+            IMGBB_API_KEY = imgbbKey;
+            localStorage.setItem('imgbb_api_key', imgbbKey);
+        }
+
+        // Save social media links
+        const socialLinks = {
+            instagram: instagramUrl,
+            facebook: facebookUrl,
+            youtube: youtubeUrl,
+        };
+        localStorage.setItem('social_links', JSON.stringify(socialLinks));
+
+        // Dispatch event to update footer
+        window.dispatchEvent(new CustomEvent('socialLinksUpdated', { detail: socialLinks }));
+
+        // Simulate brief save delay for UX
+        setTimeout(() => {
+            // Reset button state
+            saveBtn.classList.remove('loading');
+            saveBtn.disabled = false;
+            btnText.textContent = 'Save Settings';
+
+            showSuccessMessage('Settings saved successfully! Social links will appear in the footer.');
+        }, 500);
+
+    } catch (error) {
+        console.error('Save settings error:', error);
+
+        // Reset button state on error
+        saveBtn.classList.remove('loading');
+        saveBtn.disabled = false;
+        btnText.textContent = 'Save Settings';
+
+        showErrorMessage('Failed to save settings: ' + error.message);
     }
 }
 
 // Load saved settings
 window.addEventListener('load', function() {
+    // Load ImgBB API key
     const savedKey = localStorage.getItem('imgbb_api_key');
     if (savedKey) {
         IMGBB_API_KEY = savedKey;
         const keyInput = document.getElementById('imgbbApiKey');
         if (keyInput) {
             keyInput.value = savedKey;
+        }
+    }
+
+    // Load social media links
+    const savedSocialLinks = localStorage.getItem('social_links');
+    if (savedSocialLinks) {
+        try {
+            const socialLinks = JSON.parse(savedSocialLinks);
+            const instagramInput = document.getElementById('instagramUrl');
+            const facebookInput = document.getElementById('facebookUrl');
+            const youtubeInput = document.getElementById('youtubeUrl');
+
+            if (instagramInput) instagramInput.value = socialLinks.instagram || '';
+            if (facebookInput) facebookInput.value = socialLinks.facebook || '';
+            if (youtubeInput) youtubeInput.value = socialLinks.youtube || '';
+        } catch (error) {
+            console.error('Error loading social links:', error);
         }
     }
 });

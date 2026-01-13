@@ -248,6 +248,52 @@ body {
     margin-bottom: 1rem;
 }
 
+.footer-social {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid #333;
+    margin-top: 2rem;
+}
+
+.footer-social h4 {
+    color: var(--primary-cyan);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+    background: var(--primary-cyan);
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+}
+
+.social-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
@@ -255,10 +301,80 @@ body {
     color: #888;
 }
 
+/* Quantity Selector */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    border: 2px solid var(--primary-cyan);
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.qty-btn {
+    background: var(--primary-cyan);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    padding: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: white;
+    -moz-appearance: textfield; /* Firefox */
+}
+
+/* Remove spinner arrows for Chrome, Safari, Edge */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-add-cart {
+    width: 100%;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
+    }
+
+    /* Smaller quantity selector on mobile */
+    .qty-btn {
+        padding: 6px 12px;
+        font-size: 16px;
+    }
+
+    .qty-input {
+        width: 50px;
+        padding: 6px;
+        font-size: 14px;
     }
 
     .nav-menu {

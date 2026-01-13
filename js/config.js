@@ -13,7 +13,7 @@ const SHEETS_CONFIG = {
     spreadsheetId: '1A4s3oVEamoZJxE-lDl9mDuT2iZhrQTueWu2VtrWwro8',
 
     // Data range (Sheet name and columns)
-    range: 'Products!A2:H',
+    range: 'Products!A2:I',
 
     // Apps Script Web App URL (for writing products from admin panel)
     // IMPORTANT: Deploy your Apps Script first, then paste the URL here
@@ -41,7 +41,7 @@ const RAZORPAY_CONFIG = {
     currency: 'INR',
 
     // WhatsApp business number for order confirmation
-    whatsappNumber: '919067615208',
+    whatsappNumber: '917057307300',
 
     // Feature flags
     features: {
@@ -49,4 +49,17 @@ const RAZORPAY_CONFIG = {
         enableWhatsAppCheckout: true,  // Keep WhatsApp option available
         enableCOD: false  // Cash on Delivery (future feature)
     }
+};
+
+// Google Analytics 4 Configuration
+const GA4_CONFIG = {
+    // Your GA4 Measurement ID
+    // Get this from: Google Analytics → Admin → Data Streams → Web → Measurement ID
+    measurementId: 'G-P8H3YN9D8F',  // Replace with your actual Measurement ID
+
+    // Enable/disable analytics
+    enabled: true,
+
+    // Debug mode (shows events in console)
+    debug: false
 };

@@ -369,6 +369,7 @@ body {
     background: white;
     border-radius: 8px;
     overflow: hidden;
+    min-width: 600px; /* Ensure table has minimum width */
 }
 
 .data-table thead {
@@ -641,14 +642,30 @@ body {
     text-decoration: none;
 }
 
+/* Table Container for Mobile Scroll */
+#productsTable,
+#customersTable,
+#ordersTable,
+#recentOrders {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .tab-buttons {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .tab-btn {
         white-space: nowrap;
+        font-size: 14px;
+        padding: 14px 16px;
+    }
+
+    .tab-content {
+        padding: 15px;
     }
 
     .form-row {
@@ -656,20 +673,45 @@ body {
     }
 
     .data-table {
-        font-size: 12px;
+        font-size: 11px;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+        white-space: nowrap; /* Prevent text wrapping in cells */
     }
 
     .action-buttons {
-        flex-direction: column;
+        flex-direction: row; /* Keep horizontal on mobile for table */
+        gap: 4px;
+    }
+
+    .btn-edit, .btn-delete, .btn-view {
+        padding: 4px 8px;
+        font-size: 11px;
     }
 
     .admin-header {
         flex-direction: column;
         gap: 15px;
+        padding: 15px 20px;
+    }
+
+    .admin-header h1 {
+        font-size: 20px;
     }
 
     .dashboard-cards {
         grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-card .number {
+        font-size: 28px;
     }
 
     .order-modal {
@@ -682,5 +724,24 @@ body {
 
     .order-modal-footer {
         flex-direction: column;
+    }
+
+    .product-image-thumb {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Add scroll indicator hint */
+    #productsTable::after,
+    #customersTable::after,
+    #ordersTable::after,
+    #recentOrders::after {
+        content: '← Scroll to see more →';
+        display: block;
+        text-align: center;
+        padding: 10px;
+        font-size: 11px;
+        color: #999;
+        background: linear-gradient(90deg, transparent, #f8f9fa 20%, #f8f9fa 80%, transparent);
     }
 }

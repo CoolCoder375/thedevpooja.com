@@ -18,24 +18,36 @@ class ShoppingCart {
     }
 
     // Add item to cart
-    addItem(product) {
+    addItem(product, quantity = 1) {
         const existingItem = this.items.find(item => item.id === product.id);
 
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity += quantity;
         } else {
             this.items.push({
                 ...product,
-                quantity: 1
+                quantity: quantity
             });
         }
 
         this.saveCart();
-        this.showNotification(`${product.name} added to cart!`);
+        const qtyText = quantity > 1 ? ` (${quantity})` : '';
+        this.showNotification(`${product.name}${qtyText} added to cart!`);
+
+        // Track add to cart event in GA4
+        if (typeof Analytics !== 'undefined') {
+            Analytics.trackAddToCart(product, quantity);
+        }
     }
 
     // Remove item from cart
     removeItem(productId) {
+        // Track remove from cart before removing
+        const removedItem = this.items.find(item => item.id === productId);
+        if (removedItem && typeof Analytics !== 'undefined') {
+            Analytics.trackRemoveFromCart(removedItem, removedItem.quantity);
+        }
+
         this.items = this.items.filter(item => item.id !== productId);
         this.saveCart();
     }
@@ -477,6 +489,12 @@ class ShoppingCart {
 
     // Pay with WhatsApp (Cash on Delivery)
     payWithWhatsApp() {
+        // Track WhatsApp checkout in GA4
+        if (typeof Analytics !== 'undefined') {
+            Analytics.trackBeginCheckout(this.items, this.getTotal());
+            Analytics.trackWhatsAppCheckout(this.getTotal(), this.getItemCount());
+        }
+
         this.closePaymentModal();
         this.sendWhatsAppOrderConfirmation();
 
@@ -506,7 +524,7 @@ function initCart() {
 }
 
 // Global function to add to cart (called from product pages)
-function addToCart(productId) {
+function addToCart(productId, quantity = 1) {
     if (!cart) {
         console.error('Cart not initialized yet');
         return;
@@ -520,5 +538,5 @@ function addToCart(productId) {
         return;
     }
 
-    cart.addItem(product);
+    cart.addItem(product, quantity);
 }

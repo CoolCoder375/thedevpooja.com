@@ -206,7 +206,12 @@
                                     </div>
                                 </div>
                                 <div class="product-actions">
-                                    <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+                                    <div class="quantity-selector">
+                                        <button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button>
+                                        <input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${product.quantity || 999}" readonly>
+                                        <button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>
                                 </div>
                             </div>
                         </div>`
@@ -222,7 +227,14 @@
                                 <h3>${product.name}</h3>
                                 <p>${product.description}</p>
                                 <div class="product-price">₹${product.price}</div>
-                                <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+                                <div class="product-actions">
+                                    <div class="quantity-selector">
+                                        <button class="qty-btn qty-minus" onclick="decrementQty(${product.id}, 'mobile')" aria-label="Decrease quantity">-</button>
+                                        <input type="number" id="qty-mobile-${product.id}" class="qty-input" value="1" min="1" max="${product.quantity || 999}" readonly>
+                                        <button class="qty-btn qty-plus" onclick="incrementQty(${product.id}, 'mobile')" aria-label="Increase quantity">+</button>
+                                    </div>
+                                    <button class="btn btn-primary btn-add-cart" onclick="addToCartWithQty(${product.id}, 'mobile')">Add to Cart</button>
+                                </div>
                             </div>
                         </div>`
                     ).join('');

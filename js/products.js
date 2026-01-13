@@ -106,7 +106,7 @@ function extractCategories(productsData) {
  * @returns {Array} Array of product objects
  */
 function parseSheetData(response) {
-    const headers = ['id', 'name', 'category', 'price', 'image', 'description', 'features', 'quantity'];
+    const headers = ['id', 'name', 'category', 'price', 'image', 'description', 'features', 'quantity', 'featured'];
 
     return response.values.map((row, index) => {
         const product = {};
@@ -129,6 +129,9 @@ function parseSheetData(response) {
                     case 'price':
                         value = 0;
                         break;
+                    case 'featured':
+                        value = false;
+                        break;
                     default:
                         value = '';
                 }
@@ -147,6 +150,9 @@ function parseSheetData(response) {
                     .split('|')
                     .map(f => f.trim())
                     .filter(f => f.length > 0);
+            } else if (header === 'featured') {
+                // Parse boolean featured field
+                product[header] = value === true || value === 'TRUE' || value === 'true';
             } else {
                 product[header] = String(value).trim();
             }
@@ -354,7 +360,31 @@ function getProductById(id) {
 }
 
 /**
- * Render a product card HTML (for Swiper carousel)
+ * Render a featured product card HTML (for homepage Swiper carousel)
+ * Simple version without quantity selector
+ * @param {Object} product - Product object
+ * @returns {string} HTML string for product card
+ */
+function renderFeaturedProductCard(product) {
+    return `
+        <div class="swiper-slide">
+            <div class="product-card" data-category="${product.category}">
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <div class="product-price">₹${product.price}</div>
+                    <button class="btn btn-small btn-add-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Render a product card HTML (for Swiper carousel with quantity selector)
  * @param {Object} product - Product object
  * @returns {string} HTML string for product card
  */
@@ -369,11 +399,75 @@ function renderProductCard(product) {
                     <h3>${product.name}</h3>
                     <p>${product.description}</p>
                     <div class="product-price">₹${product.price}</div>
-                    <button class="btn btn-small" onclick="addToCart(${product.id})">Add to Cart</button>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button>
+                            <input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${product.quantity || 999}" readonly>
+                            <button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button>
+                        </div>
+                        <button class="btn btn-small btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>
+                    </div>
                 </div>
             </div>
         </div>
     `;
+}
+
+// ==========================================
+// QUANTITY SELECTOR FUNCTIONS
+// ==========================================
+
+/**
+ * Increment quantity for a product
+ * @param {number} productId - Product ID
+ * @param {string} view - 'desktop' or 'mobile' (optional, defaults to desktop)
+ */
+function incrementQty(productId, view = 'desktop') {
+    const inputId = view === 'mobile' ? `qty-mobile-${productId}` : `qty-${productId}`;
+    const input = document.getElementById(inputId);
+    if (input) {
+        const currentValue = parseInt(input.value) || 1;
+        const maxValue = parseInt(input.max) || 999;
+        if (currentValue < maxValue) {
+            input.value = currentValue + 1;
+        }
+    }
+}
+
+/**
+ * Decrement quantity for a product
+ * @param {number} productId - Product ID
+ * @param {string} view - 'desktop' or 'mobile' (optional, defaults to desktop)
+ */
+function decrementQty(productId, view = 'desktop') {
+    const inputId = view === 'mobile' ? `qty-mobile-${productId}` : `qty-${productId}`;
+    const input = document.getElementById(inputId);
+    if (input) {
+        const currentValue = parseInt(input.value) || 1;
+        const minValue = parseInt(input.min) || 1;
+        if (currentValue > minValue) {
+            input.value = currentValue - 1;
+        }
+    }
+}
+
+/**
+ * Add to cart with selected quantity
+ * @param {number} productId - Product ID
+ * @param {string} view - 'desktop' or 'mobile' (optional, defaults to desktop)
+ */
+function addToCartWithQty(productId, view = 'desktop') {
+    const inputId = view === 'mobile' ? `qty-mobile-${productId}` : `qty-${productId}`;
+    const input = document.getElementById(inputId);
+    const quantity = input ? parseInt(input.value) || 1 : 1;
+
+    // Call the updated addToCart function with quantity
+    addToCart(productId, quantity);
+
+    // Reset quantity to 1 after adding to cart
+    if (input) {
+        input.value = 1;
+    }
 }
 
 // ==========================================

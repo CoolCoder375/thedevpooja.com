@@ -228,6 +228,9 @@
 
 /* Quantity Controls */
 .cart-item-quantity {
+    width: fit-content;
+    border-radius: 8px;
+    border: 2px solid var(--primary-cyan);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -236,7 +239,6 @@
 .qty-btn {
     width: 28px;
     height: 28px;
-    border: 2px solid var(--primary-cyan);
     background: white;
     color: var(--primary-cyan);
     border-radius: 6px;
@@ -247,12 +249,6 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-}
-
-.qty-btn:hover {
-    background: var(--primary-cyan);
-    color: white;
-    transform: scale(1.1);
 }
 
 .qty-btn:active {

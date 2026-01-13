@@ -269,6 +269,10 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+.mobile-filter-section{
+    display:none;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .desktop-view {
@@ -344,6 +348,7 @@
 
     /* Mobile Filter Section */
     .mobile-filter-section {
+        display:block;
         max-height: 0;
         overflow: hidden;
         transition: max-height 0.4s ease, opacity 0.3s ease;
