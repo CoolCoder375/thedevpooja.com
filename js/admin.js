@@ -121,7 +121,7 @@ function loadRecentOrders() {
         `;
     } else {
         // Show recent 5 orders in a table
-        const recentOrders = currentOrders.slice(0, 5);
+        const recentOrders = currentOrders.slice(-5).reverse();
         let html = `
             <table class="data-table">
                 <thead>
@@ -174,6 +174,14 @@ function showProductForm() {
     document.getElementById('productDataForm').reset();
     document.getElementById('productId').value = '';
     document.getElementById('imagePreview').style.display = 'none';
+
+    // Clear additional image previews
+    for (let i = 2; i <= 5; i++) {
+        document.getElementById(`imagePreview${i}`).style.display = 'none';
+        document.getElementById(`previewImg${i}`).src = '';
+        document.getElementById(`productImage${i}Url`).value = '';
+    }
+
     editingProductId = null;
 }
 
@@ -282,6 +290,35 @@ async function saveProduct(event) {
             return;
         }
 
+        // Upload additional images (optional)
+        let image2 = document.getElementById('productImage2Url').value;
+        let image3 = document.getElementById('productImage3Url').value;
+        let image4 = document.getElementById('productImage4Url').value;
+        let image5 = document.getElementById('productImage5Url').value;
+
+        // Upload new additional images if selected
+        const image2File = document.getElementById('productImage2File').files[0];
+        const image3File = document.getElementById('productImage3File').files[0];
+        const image4File = document.getElementById('productImage4File').files[0];
+        const image5File = document.getElementById('productImage5File').files[0];
+
+        if (image2File) {
+            btnText.textContent = 'Uploading image 2...';
+            image2 = await uploadImageToImgBB(image2File);
+        }
+        if (image3File) {
+            btnText.textContent = 'Uploading image 3...';
+            image3 = await uploadImageToImgBB(image3File);
+        }
+        if (image4File) {
+            btnText.textContent = 'Uploading image 4...';
+            image4 = await uploadImageToImgBB(image4File);
+        }
+        if (image5File) {
+            btnText.textContent = 'Uploading image 5...';
+            image5 = await uploadImageToImgBB(image5File);
+        }
+
         // Create product object
         const productData = {
             name,
@@ -291,7 +328,11 @@ async function saveProduct(event) {
             description,
             features,
             image: imageUrl,
-            featured: featured
+            featured: featured,
+            image2: image2 || '',
+            image3: image3 || '',
+            image4: image4 || '',
+            image5: image5 || ''
         };
 
         btnText.textContent = 'Saving to Google Sheets...';
@@ -373,13 +414,28 @@ function loadProducts() {
             ? '<span class="status-badge status-paid">⭐ Featured</span>'
             : '<span class="status-badge status-pending">-</span>';
 
+        // Stock status indicator with quantity
+        const quantity = parseInt(product.quantity) || 0;
+        let stockDisplay = '';
+        let rowClass = '';
+
+        if (quantity === 0) {
+            stockDisplay = `<div><strong>${quantity}</strong> <span class="stock-indicator out-of-stock-admin">⛔ Out of Stock</span></div>`;
+            rowClass = 'row-out-of-stock';
+        } else if (quantity <= 5) {
+            stockDisplay = `<div><strong>${quantity}</strong> <span class="stock-indicator low-stock-admin">⚠️ Low Stock</span></div>`;
+            rowClass = 'row-low-stock';
+        } else {
+            stockDisplay = `<div><strong>${quantity}</strong> <span class="stock-indicator in-stock-admin">✅</span></div>`;
+        }
+
         html += `
-            <tr>
+            <tr class="${rowClass}">
                 <td><img src="${product.image}" class="product-image-thumb" alt="${product.name}" onerror="this.src='https://via.placeholder.com/50'"></td>
                 <td>${product.name}</td>
                 <td>${categoryName}</td>
                 <td>₹${product.price}</td>
-                <td>${product.quantity || 0}</td>
+                <td>${stockDisplay}</td>
                 <td>${featuredBadge}</td>
                 <td>
                     <div class="action-buttons">
@@ -416,6 +472,28 @@ function editProduct(id) {
     document.getElementById('productFeatures').value = Array.isArray(product.features) ? product.features.join('|') : '';
     document.getElementById('productImageUrl').value = product.image;
     document.getElementById('productFeatured').checked = product.featured === true || product.featured === 'TRUE' || product.featured === 'true';
+
+    // Populate additional images URLs and previews
+    if (product.image2) {
+        document.getElementById('productImage2Url').value = product.image2;
+        document.getElementById('previewImg2').src = product.image2;
+        document.getElementById('imagePreview2').style.display = 'block';
+    }
+    if (product.image3) {
+        document.getElementById('productImage3Url').value = product.image3;
+        document.getElementById('previewImg3').src = product.image3;
+        document.getElementById('imagePreview3').style.display = 'block';
+    }
+    if (product.image4) {
+        document.getElementById('productImage4Url').value = product.image4;
+        document.getElementById('previewImg4').src = product.image4;
+        document.getElementById('imagePreview4').style.display = 'block';
+    }
+    if (product.image5) {
+        document.getElementById('productImage5Url').value = product.image5;
+        document.getElementById('previewImg5').src = product.image5;
+        document.getElementById('imagePreview5').style.display = 'block';
+    }
 
     if (product.image) {
         document.getElementById('previewImg').src = product.image;
@@ -909,6 +987,55 @@ function showLoading(message) {
 
 function hideLoading() {
     // TODO: Hide global loading indicator
+}
+
+// ==========================================
+// ADDITIONAL IMAGES FUNCTIONS
+// ==========================================
+
+function previewAdditionalImage(event, imageNumber) {
+    event.stopPropagation();
+    const file = event.target.files[0];
+
+    if (file) {
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Image size must be less than 10MB');
+            event.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById(`previewImg${imageNumber}`);
+            const imagePreview = document.getElementById(`imagePreview${imageNumber}`);
+
+            previewImg.src = e.target.result;
+            imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeAdditionalImage(event, imageNumber) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    // Clear file input
+    const fileInput = document.getElementById(`productImage${imageNumber}File`);
+    fileInput.value = '';
+
+    // Clear hidden URL input
+    const urlInput = document.getElementById(`productImage${imageNumber}Url`);
+    urlInput.value = '';
+
+    // Hide preview
+    const imagePreview = document.getElementById(`imagePreview${imageNumber}`);
+    imagePreview.style.display = 'none';
+
+    // Clear preview image src
+    const previewImg = document.getElementById(`previewImg${imageNumber}`);
+    previewImg.src = '';
 }
 
 // ==========================================

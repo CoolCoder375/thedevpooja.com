@@ -305,6 +305,90 @@ body {
     border-radius: 8px;
 }
 
+/* Additional Images Grid */
+.additional-images-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.additional-image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.additional-image-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+}
+
+/* Small upload area for additional images */
+.image-upload-area-small {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.image-upload-area-small:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.image-upload-area-small p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.image-preview-small {
+    display: none;
+    position: relative;
+    width: 100%;
+    max-width: 100px;
+    margin-top: 10px;
+}
+
+.image-preview-small img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.remove-image-btn:hover {
+    background: #c82333;
+}
+
 .form-actions {
     display: flex;
     gap: 10px;
@@ -743,5 +827,60 @@ body {
         font-size: 11px;
         color: #999;
         background: linear-gradient(90deg, transparent, #f8f9fa 20%, #f8f9fa 80%, transparent);
+    }
+}
+
+/* ==========================================
+   INVENTORY MANAGEMENT STYLES
+   ========================================== */
+
+/* Stock indicators in product table */
+.stock-indicator {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.stock-indicator.out-of-stock-admin {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.stock-indicator.low-stock-admin {
+    background-color: #fff3e0;
+    color: #e65100;
+    animation: pulse-warning 2s infinite;
+}
+
+.stock-indicator.in-stock-admin {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Row highlighting for stock status */
+.data-table tr.row-out-of-stock {
+    background-color: #ffebee !important;
+}
+
+.data-table tr.row-low-stock {
+    background-color: #fff8e1 !important;
+}
+
+.data-table tr.row-out-of-stock:hover,
+.data-table tr.row-low-stock:hover {
+    opacity: 0.9;
+}
+
+/* Pulse animation for low stock warning */
+@keyframes pulse-warning {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
     }
 }

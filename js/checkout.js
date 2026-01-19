@@ -94,10 +94,18 @@ class Checkout {
     // Update place order button text
     updatePlaceOrderButton() {
         const btn = document.getElementById('placeOrderBtn');
+        if (!btn) return;
+
+        const btnText = btn.querySelector('.btn-text');
+        if (!btnText) {
+            console.error('Button .btn-text not found');
+            return;
+        }
+
         if (this.selectedPaymentMethod === 'razorpay') {
-            btn.textContent = 'Proceed to Payment';
+            btnText.textContent = 'Proceed to Payment';
         } else {
-            btn.textContent = 'Place Order';
+            btnText.textContent = 'Place Order';
         }
     }
 
@@ -145,7 +153,14 @@ class Checkout {
     // Show button loading state
     showButtonLoading(text = 'Processing...') {
         const btn = document.getElementById('placeOrderBtn');
+        if (!btn) return;
+
         const btnText = btn.querySelector('.btn-text');
+        if (!btnText) {
+            console.error('Button .btn-text not found');
+            return;
+        }
+
         btn.classList.add('loading');
         btn.disabled = true;
         btnText.textContent = text;
@@ -154,7 +169,14 @@ class Checkout {
     // Hide button loading state
     hideButtonLoading(text = 'Place Order') {
         const btn = document.getElementById('placeOrderBtn');
+        if (!btn) return;
+
         const btnText = btn.querySelector('.btn-text');
+        if (!btnText) {
+            console.error('Button .btn-text not found');
+            return;
+        }
+
         btn.classList.remove('loading');
         btn.disabled = false;
         btnText.textContent = text;

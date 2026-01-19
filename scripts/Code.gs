@@ -15,7 +15,12 @@ const COLUMNS = {
   IMAGE: 4,       // Column E
   DESCRIPTION: 5, // Column F
   FEATURES: 6,    // Column G
-  QUANTITY: 7     // Column H
+  QUANTITY: 7,    // Column H
+  FEATURED: 8,    // Column I
+  IMAGE2: 9,      // Column J (optional additional image)
+  IMAGE3: 10,     // Column K (optional additional image)
+  IMAGE4: 11,     // Column L (optional additional image)
+  IMAGE5: 12      // Column M (optional additional image)
 };
 
 /**
@@ -106,7 +111,12 @@ function addProduct(productData) {
     productData.image,               // Image URL
     productData.description,         // Description
     featuresStr,                     // Features
-    productData.quantity || 0        // Quantity
+    productData.quantity || 0,       // Quantity
+    productData.featured || false,   // Featured
+    productData.image2 || '',        // Additional Image 2 (optional)
+    productData.image3 || '',        // Additional Image 3 (optional)
+    productData.image4 || '',        // Additional Image 4 (optional)
+    productData.image5 || ''         // Additional Image 5 (optional)
   ];
 
   // Append row to sheet
@@ -161,7 +171,12 @@ function updateProduct(productId, productData) {
     productData.image,               // Image URL
     productData.description,         // Description
     featuresStr,                     // Features
-    productData.quantity || 0        // Quantity
+    productData.quantity || 0,       // Quantity
+    productData.featured || false,   // Featured
+    productData.image2 || '',        // Additional Image 2 (optional)
+    productData.image3 || '',        // Additional Image 3 (optional)
+    productData.image4 || '',        // Additional Image 4 (optional)
+    productData.image5 || ''         // Additional Image 5 (optional)
   ];
 
   // Write updated data to the row
@@ -262,6 +277,98 @@ function notifyClientsToRefresh() {
 }
 
 /**
+ * Reduce product quantity after order is placed
+ */
+function reduceProductQuantity(productId, quantityToReduce) {
+  console.log(`Reducing quantity for product ${productId} by ${quantityToReduce}`);
+
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    throw new Error('Sheet "' + SHEET_NAME + '" not found');
+  }
+
+  // Find the product row
+  const dataRange = sheet.getDataRange();
+  const values = dataRange.getValues();
+
+  let rowIndex = -1;
+  let currentQuantity = 0;
+
+  for (let i = DATA_START_ROW - 1; i < values.length; i++) {
+    if (values[i][COLUMNS.ID].toString() === productId.toString()) {
+      rowIndex = i + 1; // Sheet rows are 1-indexed
+      currentQuantity = parseInt(values[i][COLUMNS.QUANTITY]) || 0;
+      break;
+    }
+  }
+
+  if (rowIndex === -1) {
+    throw new Error('Product not found with ID: ' + productId);
+  }
+
+  // Check if sufficient quantity available
+  if (currentQuantity < quantityToReduce) {
+    throw new Error(`Insufficient stock for product ID ${productId}. Available: ${currentQuantity}, Requested: ${quantityToReduce}`);
+  }
+
+  // Calculate new quantity
+  const newQuantity = currentQuantity - quantityToReduce;
+
+  // Update the quantity in the sheet
+  const quantityCell = sheet.getRange(rowIndex, COLUMNS.QUANTITY + 1); // +1 because columns are 1-indexed
+  quantityCell.setValue(newQuantity);
+
+  console.log(`✅ Product ${productId} quantity reduced: ${currentQuantity} → ${newQuantity}`);
+
+  return {
+    productId: productId,
+    oldQuantity: currentQuantity,
+    newQuantity: newQuantity,
+    reduced: quantityToReduce
+  };
+}
+
+/**
+ * Check if all items in order have sufficient quantity
+ */
+function validateOrderQuantities(items) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    throw new Error('Sheet "' + SHEET_NAME + '" not found');
+  }
+
+  const dataRange = sheet.getDataRange();
+  const values = dataRange.getValues();
+
+  const insufficientItems = [];
+
+  // Check each item in the order
+  for (const item of items) {
+    // Find product in sheet
+    for (let i = DATA_START_ROW - 1; i < values.length; i++) {
+      if (values[i][COLUMNS.ID].toString() === item.id.toString()) {
+        const availableQty = parseInt(values[i][COLUMNS.QUANTITY]) || 0;
+        const requestedQty = item.quantity;
+
+        if (availableQty < requestedQty) {
+          insufficientItems.push({
+            id: item.id,
+            name: item.name,
+            available: availableQty,
+            requested: requestedQty
+          });
+        }
+        break;
+      }
+    }
+  }
+
+  return insufficientItems;
+}
+
+/**
  * Add a new order to the Orders sheet (Enhanced with detailed logging)
  */
 function addOrder(orderData) {
@@ -271,6 +378,29 @@ function addOrder(orderData) {
   console.log('Customer:', orderData.customer.name);
 
   try {
+    // STEP 1: Validate quantities before creating order
+    console.log('Validating product quantities...');
+    const insufficientItems = validateOrderQuantities(orderData.items);
+
+    if (insufficientItems.length > 0) {
+      const errorMsg = insufficientItems.map(item =>
+        `${item.name}: Available ${item.available}, Requested ${item.requested}`
+      ).join('; ');
+      throw new Error('Insufficient stock: ' + errorMsg);
+    }
+    console.log('✅ All items have sufficient quantity');
+
+    // STEP 2: Reduce product quantities
+    console.log('Reducing product quantities...');
+    const quantityReductions = [];
+
+    for (const item of orderData.items) {
+      const reduction = reduceProductQuantity(item.id, item.quantity);
+      quantityReductions.push(reduction);
+    }
+    console.log('✅ All quantities reduced successfully');
+
+    // STEP 3: Add order to Orders sheet
     // Use hardcoded spreadsheet ID to ensure correct sheet
     const ss = SpreadsheetApp.openById('1A4s3oVEamoZJxE-lDl9mDuT2iZhrQTueWu2VtrWwro8');
     console.log('✅ Spreadsheet opened:', ss.getName());
@@ -337,7 +467,8 @@ function addOrder(orderData) {
     return {
       message: 'Order added successfully',
       orderId: orderData.orderId,
-      rowNumber: lastRow
+      rowNumber: lastRow,
+      quantityReductions: quantityReductions
     };
 
   } catch (error) {

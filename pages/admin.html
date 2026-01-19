@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevPooja Admin Panel</title>
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" type="image/png" href="../images/logo.png">
 </head>
 <body>
     <!-- Login Screen -->
@@ -155,7 +156,7 @@
                         </div>
 
                         <div class="form-field">
-                            <label>Product Image *</label>
+                            <label>Main Product Image *</label>
                             <div class="image-upload-area" onclick="document.getElementById('productImage').click()">
                                 <p>📸 Click to upload image</p>
                                 <p style="font-size: 12px; color: #999; margin-top: 8px;">JPG, PNG, GIF (Max 10MB)</p>
@@ -165,6 +166,70 @@
                                 </div>
                             </div>
                             <input type="hidden" id="productImageUrl">
+                        </div>
+
+                        <!-- Additional Images (Optional) -->
+                        <div class="form-field">
+                            <label>Additional Images (Optional)</label>
+                            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Add up to 4 more images for product gallery</p>
+
+                            <div class="additional-images-grid">
+                                <!-- Image 2 -->
+                                <div class="additional-image-field">
+                                    <label>Image 2</label>
+                                    <div class="image-upload-area-small" onclick="document.getElementById('productImage2File').click()">
+                                        <p>📸 Upload</p>
+                                        <input type="file" id="productImage2File" accept="image/*" onchange="previewAdditionalImage(event, 2)" style="display: none;">
+                                        <div class="image-preview-small" id="imagePreview2">
+                                            <img id="previewImg2" src="" alt="Preview">
+                                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(event, 2)">✕</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="productImage2Url">
+                                </div>
+
+                                <!-- Image 3 -->
+                                <div class="additional-image-field">
+                                    <label>Image 3</label>
+                                    <div class="image-upload-area-small" onclick="document.getElementById('productImage3File').click()">
+                                        <p>📸 Upload</p>
+                                        <input type="file" id="productImage3File" accept="image/*" onchange="previewAdditionalImage(event, 3)" style="display: none;">
+                                        <div class="image-preview-small" id="imagePreview3">
+                                            <img id="previewImg3" src="" alt="Preview">
+                                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(event, 3)">✕</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="productImage3Url">
+                                </div>
+
+                                <!-- Image 4 -->
+                                <div class="additional-image-field">
+                                    <label>Image 4</label>
+                                    <div class="image-upload-area-small" onclick="document.getElementById('productImage4File').click()">
+                                        <p>📸 Upload</p>
+                                        <input type="file" id="productImage4File" accept="image/*" onchange="previewAdditionalImage(event, 4)" style="display: none;">
+                                        <div class="image-preview-small" id="imagePreview4">
+                                            <img id="previewImg4" src="" alt="Preview">
+                                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(event, 4)">✕</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="productImage4Url">
+                                </div>
+
+                                <!-- Image 5 -->
+                                <div class="additional-image-field">
+                                    <label>Image 5</label>
+                                    <div class="image-upload-area-small" onclick="document.getElementById('productImage5File').click()">
+                                        <p>📸 Upload</p>
+                                        <input type="file" id="productImage5File" accept="image/*" onchange="previewAdditionalImage(event, 5)" style="display: none;">
+                                        <div class="image-preview-small" id="imagePreview5">
+                                            <img id="previewImg5" src="" alt="Preview">
+                                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(event, 5)">✕</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="productImage5Url">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-actions">

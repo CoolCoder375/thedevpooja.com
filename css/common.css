@@ -359,6 +359,70 @@ body {
     width: 100%;
 }
 
+/* ==========================================
+   STOCK BADGES (Out of Stock / Low Stock)
+   ========================================== */
+
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stock-badge.out-of-stock {
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+    color: white;
+}
+
+.stock-badge.low-stock {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+/* Pulse animation for low stock badge */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Out of stock product styling */
+.product-card.out-of-stock {
+    opacity: 0.75;
+}
+
+.product-card.out-of-stock .product-image img {
+    filter: grayscale(50%);
+}
+
+/* Clickable product elements */
+.product-card h3:hover {
+    color: var(--primary-cyan);
+    text-decoration: underline;
+}
+
+.product-card .product-image {
+    transition: transform 0.3s ease;
+}
+
+.product-card .product-image:hover {
+    transform: scale(1.02);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .hamburger {

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - DevPooja</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images/logo.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/cart.css">
+    <link rel="stylesheet" href="../css/product-detail.css">
+
+    <!-- Swiper CSS for image gallery -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="product-detail-page">
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-logo">
+                <a href="../index.html">
+                    <img src="../images/logo.JPG" alt="The Devpooja" class="logo-img">
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="products.html" class="nav-link active">Products</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail-section">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb" id="breadcrumb">
+                <a href="../index.html">Home</a>
+                <span>/</span>
+                <a href="products.html">Products</a>
+                <span>/</span>
+                <span class="current" id="breadcrumbProduct">Product</span>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Loading product details...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <h2>Product Not Found</h2>
+                <p>Sorry, the product you're looking for doesn't exist.</p>
+                <a href="products.html" class="btn btn-primary">Back to Products</a>
+            </div>
+
+            <!-- Product Content -->
+            <div id="productContent" class="product-detail-container" style="display: none;">
+                <!-- Product Images -->
+                <div class="product-images">
+                    <!-- Main Image Gallery -->
+                    <div class="swiper product-images-main" id="productImagesMain">
+                        <div class="swiper-wrapper" id="mainImagesWrapper">
+                            <!-- Images will be inserted here -->
+                        </div>
+                        <!-- Navigation buttons -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <!-- Pagination -->
+                        <div class="swiper-pagination"></div>
+                    </div>
+
+                    <!-- Thumbnail Gallery -->
+                    <div class="swiper product-images-thumbs" id="productImagesThumbs">
+                        <div class="swiper-wrapper" id="thumbImagesWrapper">
+                            <!-- Thumbnails will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info-detail">
+                    <!-- Stock Badge -->
+                    <div id="stockBadge"></div>
+
+                    <div class="title-grid">
+                        <!-- Product Title -->
+                    <h1 class="product-title" id="productTitle"></h1>
+
+                    <!-- Category -->
+                    <div class="product-category" id="productCategory"></div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="product-price-detail">
+                        <span class="price-label">Price:</span>
+                        <span class="price-amount" id="productPrice"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="product-description">
+                        <h3>Description</h3>
+                        <p id="productDescription"></p>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="product-features" id="productFeaturesContainer" style="display: none;">
+                        <h3>Features</h3>
+                        <ul class="features-list" id="productFeaturesList">
+                            <!-- Features will be inserted here -->
+                        </ul>
+                    </div>
+
+                    <!-- Quantity Selector & Add to Cart -->
+                    <div class="product-actions-detail" id="productActions">
+                        <div class="quantity-selector-detail">
+                            <label for="productQty">Quantity:</label>
+                            <div class="qty-controls">
+                                <button class="qty-btn qty-minus" id="qtyMinus" aria-label="Decrease quantity">-</button>
+                                <input type="number" id="productQty" class="qty-input" value="1" min="1" max="999" readonly>
+                                <button class="qty-btn qty-plus" id="qtyPlus" aria-label="Increase quantity">+</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-add-cart-detail" id="addToCartBtn">
+                            Add to Cart
+                        </button>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="product-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Product ID:</span>
+                            <span class="meta-value" id="productId"></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Availability:</span>
+                            <span class="meta-value" id="productAvailability"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="related-products-section" id="relatedProductsSection" style="display: none;">
+                <h2 class="section-title">You May Also Like</h2>
+                <div class="swiper products-swiper" id="relatedProductsSwiper">
+                    <div class="swiper-wrapper" id="relatedProductsWrapper">
+                        <!-- Related products will be inserted here -->
+                    </div>
+                    <!-- Navigation -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DevPooja</h3>
+                    <p>Your trusted source for authentic pooja items and spiritual products.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>Email: info@devpooja.com</p>
+                    <p>Phone: +91 7057307300</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DevPooja. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/analytics.js"></script>
+    <script src="../js/products.js"></script>
+    <script src="../js/product-detail.js"></script>
+    <script src="../js/cart.js"></script>
+</body>
+</html>

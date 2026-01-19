@@ -13,7 +13,7 @@ const SHEETS_CONFIG = {
     spreadsheetId: '1A4s3oVEamoZJxE-lDl9mDuT2iZhrQTueWu2VtrWwro8',
 
     // Data range (Sheet name and columns)
-    range: 'Products!A2:I',
+    range: 'Products!A2:M',
 
     // Apps Script Web App URL (for writing products from admin panel)
     // IMPORTANT: Deploy your Apps Script first, then paste the URL here
@@ -27,7 +27,7 @@ const RAZORPAY_CONFIG = {
     // Get from: https://dashboard.razorpay.com/app/keys
     // Test Mode: rzp_test_xxxxx (for testing with test cards)
     // Live Mode: rzp_live_xxxxx (after KYC approval)
-    keyId: '',  // Add your Razorpay Key ID here
+    keyId: 'rzp_test_S3gfDCKXmD4STn',  // Add your Razorpay Key ID here
 
     // Business information (displayed in Razorpay checkout modal)
     businessName: 'DevPooja',

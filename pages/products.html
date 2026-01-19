@@ -12,7 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="../images/logo.png">
+
 </head>
 <body>
     <header class="header">
@@ -39,28 +40,40 @@
     <main>
         <section class="products-listing">
             <div class="container">
-                <!-- Desktop Controls -->
-                <div class="products-controls desktop-controls">
-                    <div class="filter-section" id="filterSectionDesktop">
-                        <h3>Filter by Category</h3>
-                        <div class="filter-buttons">
-                            <button class="filter-btn active" data-category="all">All Products</button>
-                            <button class="filter-btn" data-category="incense">Incense & Dhoop</button>
-                            <button class="filter-btn" data-category="garlands">Garlands & Flowers</button>
-                            <button class="filter-btn" data-category="idols">Idols & Statues</button>
-                            <button class="filter-btn" data-category="diyas">Diyas & Lamps</button>
-                            <button class="filter-btn" data-category="pooja-items">Pooja Items</button>
-                            <button class="filter-btn" data-category="coconuts">Coconuts</button>
+                <!-- Desktop Layout: Sidebar + Products -->
+                <div class="products-layout-container desktop-view">
+                    <!-- Desktop Left Sidebar - Filters -->
+                    <aside class="desktop-sidebar">
+                        <div class="filter-section" id="filterSectionDesktop">
+                            <h3>Categories</h3>
+                            <div class="filter-buttons desktop-filter-buttons">
+                                <button class="filter-btn active" data-category="all">All Products</button>
+                                <button class="filter-btn" data-category="incense">Incense & Dhoop</button>
+                                <button class="filter-btn" data-category="garlands">Garlands & Flowers</button>
+                                <button class="filter-btn" data-category="idols">Idols & Statues</button>
+                                <button class="filter-btn" data-category="diyas">Diyas & Lamps</button>
+                                <button class="filter-btn" data-category="pooja-items">Pooja Items</button>
+                                <button class="filter-btn" data-category="coconuts">Coconuts</button>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Desktop Main Content -->
+                    <div class="desktop-main-content">
+                        <div class="results-info">
+                            <span id="results-count">Showing all products</span>
+                        </div>
+
+                        <!-- Desktop Grid View -->
+                        <div class="products-grid" id="all-products">
+                            <!-- Products will be loaded dynamically -->
+                        </div>
+
+                        <!-- Desktop Pagination -->
+                        <div class="pagination-container" id="desktop-pagination">
+                            <!-- Pagination will be loaded dynamically -->
                         </div>
                     </div>
-                    <div class="results-info">
-                        <span id="results-count">Showing all products</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Grid View -->
-                <div class="products-grid desktop-view" id="all-products">
-                    <!-- Products will be loaded dynamically -->
                 </div>
 
                 <!-- Mobile Layout: Filters Left + Products Right -->
@@ -92,6 +105,11 @@
                         </div>
                         <div class="mobile-products-grid" id="mobile-products">
                             <!-- Products will be loaded dynamically for mobile -->
+                        </div>
+
+                        <!-- Mobile Pagination -->
+                        <div class="pagination-container" id="mobile-pagination">
+                            <!-- Pagination will be loaded dynamically -->
                         </div>
                     </div>
                 </div>
@@ -149,40 +167,75 @@
         document.addEventListener('productsLoaded', function() {
             const productsContainer = document.getElementById('all-products');
             const mobileProductsContainer = document.getElementById('mobile-products');
-            const filterButtons = document.querySelectorAll('.filter-btn');
+            const desktopFilterButtons = document.querySelectorAll('.desktop-filter-buttons .filter-btn');
+            const mobileFilterButtons = document.querySelectorAll('.mobile-filter-buttons .filter-btn');
             const resultsCount = document.getElementById('results-count');
             const mobileResultsCount = document.getElementById('mobile-results-count');
+            const desktopPagination = document.getElementById('desktop-pagination');
+            const mobilePagination = document.getElementById('mobile-pagination');
+
+            // Pagination state
+            let currentPage = 1;
+            const itemsPerPage = 10;
+            let currentCategory = 'all';
+            let allProductsToShow = [];
 
             // Load all products initially
             loadProducts('all');
 
-            // Add filter functionality
-            filterButtons.forEach(button => {
+            // Desktop filter functionality
+            desktopFilterButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
+                    desktopFilterButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
 
                     const category = this.getAttribute('data-category');
+                    currentPage = 1; // Reset to first page when filtering
+                    loadProducts(category);
+                });
+            });
+
+            // Mobile filter functionality
+            mobileFilterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    mobileFilterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const category = this.getAttribute('data-category');
+                    currentPage = 1;
                     loadProducts(category);
                 });
             });
 
             function loadProducts(category) {
-                let productsToShow;
+                currentCategory = category;
 
                 if (category === 'all') {
-                    productsToShow = products;
-                    resultsCount.textContent = `Showing all ${products.length} products`;
+                    allProductsToShow = products;
+                } else {
+                    allProductsToShow = getProductsByCategory(category);
+                }
+
+                renderProductsPage();
+                renderPagination();
+            }
+
+            function renderProductsPage() {
+                const totalProducts = allProductsToShow.length;
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const productsToShow = allProductsToShow.slice(startIndex, endIndex);
+
+                // Update results count
+                if (currentCategory === 'all') {
+                    resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, totalProducts)} of ${totalProducts} products`;
                     if (mobileResultsCount) {
-                        mobileResultsCount.textContent = `All Products (${products.length})`;
+                        mobileResultsCount.textContent = `${startIndex + 1}-${Math.min(endIndex, totalProducts)} of ${totalProducts}`;
                     }
                 } else {
-                    productsToShow = getProductsByCategory(category);
-                    resultsCount.textContent = `Showing ${productsToShow.length} products in ${categories[category] || category}`;
+                    resultsCount.textContent = `Showing ${startIndex + 1}-${Math.min(endIndex, totalProducts)} of ${totalProducts} in ${categories[currentCategory] || currentCategory}`;
                     if (mobileResultsCount) {
-                        mobileResultsCount.textContent = `${productsToShow.length} items`;
+                        mobileResultsCount.textContent = `${startIndex + 1}-${Math.min(endIndex, totalProducts)} of ${totalProducts}`;
                     }
                 }
 
@@ -190,41 +243,55 @@
                     productsContainer.innerHTML = '<p class="no-products">No products found in this category.</p>';
                     mobileProductsContainer.innerHTML = '<p class="no-products">No products found.</p>';
                 } else {
-                    // Desktop grid - horizontal card layout
-                    productsContainer.innerHTML = productsToShow.map(product =>
-                        `<div class="product-card-horizontal" data-category="${product.category}">
-                            <div class="product-image-horizontal">
+                    // Desktop grid - 3 column portrait card layout
+                    productsContainer.innerHTML = productsToShow.map(product => {
+                        const quantity = parseInt(product.quantity) || 0;
+                        const isOutOfStock = quantity === 0;
+                        const isLowStock = quantity > 0 && quantity <= 5;
+
+                        let stockBadge = '';
+                        if (isOutOfStock) {
+                            stockBadge = '<div class="stock-badge out-of-stock">Out of Stock</div>';
+                        } else if (isLowStock) {
+                            stockBadge = `<div class="stock-badge low-stock">Only ${quantity} left!</div>`;
+                        }
+
+                        const addToCartBtn = isOutOfStock
+                            ? '<button class="btn btn-primary btn-add-cart" disabled style="background: #ccc; cursor: not-allowed;">Out of Stock</button>'
+                            : `<button class="btn btn-primary btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>`;
+
+                        const quantitySelector = isOutOfStock
+                            ? '<div class="quantity-selector" style="opacity: 0.5; pointer-events: none;"><button class="qty-btn qty-minus" disabled>-</button><input type="number" class="qty-input" value="1" min="1" max="1" readonly disabled><button class="qty-btn qty-plus" disabled>+</button></div>'
+                            : `<div class="quantity-selector"><button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button><input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${quantity}" readonly><button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button></div>`;
+
+                        return `<div class="desktop-product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-category="${product.category}">
+                            ${stockBadge}
+                            <div class="desktop-product-image" onclick="window.location.href='product-detail.html?id=${product.id}'">
                                 <img src="${product.image}" alt="${product.name}" loading="lazy">
                             </div>
-                            <div class="product-content-horizontal">
-                                <div class="product-info-horizontal">
-                                    <h3>${product.name}</h3>
-                                    <p>${product.description}</p>
-                                    <div class="product-price">₹${product.price}</div>
-                                    <div class="product-features">
-                                        ${product.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
-                                    </div>
+                            <div class="desktop-product-info">
+                                <h3 onclick="window.location.href='product-detail.html?id=${product.id}'">${product.name}</h3>
+                                <p>${product.description}</p>
+                                <div class="product-price">₹${product.price}</div>
+                                <div class="product-features">
+                                    ${product.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
                                 </div>
                                 <div class="product-actions">
-                                    <div class="quantity-selector">
-                                        <button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button>
-                                        <input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${product.quantity || 999}" readonly>
-                                        <button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button>
-                                    </div>
-                                    <button class="btn btn-primary btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>
+                                    ${quantitySelector}
+                                    ${addToCartBtn}
                                 </div>
                             </div>
-                        </div>`
-                    ).join('');
+                        </div>`;
+                    }).join('');
 
                     // Mobile grid - portrait cards
                     mobileProductsContainer.innerHTML = productsToShow.map(product =>
                         `<div class="mobile-product-card" data-category="${product.category}">
-                            <div class="mobile-product-image">
+                            <div class="mobile-product-image" style="cursor: pointer;" onclick="window.location.href='product-detail.html?id=${product.id}'">
                                 <img src="${product.image}" alt="${product.name}" loading="lazy">
                             </div>
                             <div class="mobile-product-info">
-                                <h3>${product.name}</h3>
+                                <h3 style="cursor: pointer;" onclick="window.location.href='product-detail.html?id=${product.id}'">${product.name}</h3>
                                 <p>${product.description}</p>
                                 <div class="product-price">₹${product.price}</div>
                                 <div class="product-actions">
@@ -239,7 +306,77 @@
                         </div>`
                     ).join('');
                 }
+
+                // Scroll to top of products section
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+
+            function renderPagination() {
+                const totalPages = Math.ceil(allProductsToShow.length / itemsPerPage);
+
+                if (totalPages <= 1) {
+                    desktopPagination.innerHTML = '';
+                    mobilePagination.innerHTML = '';
+                    return;
+                }
+
+                let paginationHTML = '<div class="pagination">';
+
+                // Previous button
+                paginationHTML += `<button class="pagination-btn ${currentPage === 1 ? 'disabled' : ''}"
+                    onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    « Previous
+                </button>`;
+
+                // Page numbers
+                const maxVisiblePages = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                if (endPage - startPage < maxVisiblePages - 1) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+
+                if (startPage > 1) {
+                    paginationHTML += `<button class="pagination-btn" onclick="goToPage(1)">1</button>`;
+                    if (startPage > 2) {
+                        paginationHTML += `<span class="pagination-dots">...</span>`;
+                    }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHTML += `<button class="pagination-btn ${i === currentPage ? 'active' : ''}"
+                        onclick="goToPage(${i})">${i}</button>`;
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        paginationHTML += `<span class="pagination-dots">...</span>`;
+                    }
+                    paginationHTML += `<button class="pagination-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+                }
+
+                // Next button
+                paginationHTML += `<button class="pagination-btn ${currentPage === totalPages ? 'disabled' : ''}"
+                    onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Next »
+                </button>`;
+
+                paginationHTML += '</div>';
+
+                desktopPagination.innerHTML = paginationHTML;
+                mobilePagination.innerHTML = paginationHTML;
+            }
+
+            // Make goToPage function globally accessible
+            window.goToPage = function(page) {
+                const totalPages = Math.ceil(allProductsToShow.length / itemsPerPage);
+                if (page < 1 || page > totalPages) return;
+
+                currentPage = page;
+                renderProductsPage();
+                renderPagination();
+            };
         });
 
         // Mobile menu toggle
