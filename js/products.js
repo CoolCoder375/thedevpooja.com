@@ -106,7 +106,7 @@ function extractCategories(productsData) {
  * @returns {Array} Array of product objects
  */
 function parseSheetData(response) {
-    const headers = ['id', 'name', 'category', 'price', 'image', 'description', 'features', 'quantity', 'featured'];
+    const headers = ['id', 'name', 'category', 'price', 'image', 'description', 'features', 'quantity', 'featured', 'image2', 'image3', 'image4', 'image5'];
 
     return response.values.map((row, index) => {
         const product = {};
@@ -131,6 +131,12 @@ function parseSheetData(response) {
                         break;
                     case 'featured':
                         value = false;
+                        break;
+                    case 'image2':
+                    case 'image3':
+                    case 'image4':
+                    case 'image5':
+                        value = ''; // Optional additional images
                         break;
                     default:
                         value = '';
@@ -366,17 +372,35 @@ function getProductById(id) {
  * @returns {string} HTML string for product card
  */
 function renderFeaturedProductCard(product) {
+    const quantity = parseInt(product.quantity) || 0;
+    const isOutOfStock = quantity === 0;
+    const isLowStock = quantity > 0 && quantity <= 5;
+
+    // Stock badge HTML
+    let stockBadge = '';
+    if (isOutOfStock) {
+        stockBadge = '<div class="stock-badge out-of-stock">Out of Stock</div>';
+    } else if (isLowStock) {
+        stockBadge = `<div class="stock-badge low-stock">Only ${quantity} left!</div>`;
+    }
+
+    // Disable add to cart if out of stock
+    const addToCartBtn = isOutOfStock
+        ? '<button class="btn btn-small btn-add-cart" disabled style="background: #ccc; cursor: not-allowed;">Out of Stock</button>'
+        : `<button class="btn btn-small btn-add-cart" onclick="addToCart(${product.id})">Add to Cart</button>`;
+
     return `
         <div class="swiper-slide">
-            <div class="product-card" data-category="${product.category}">
-                <div class="product-image">
+            <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-category="${product.category}">
+                ${stockBadge}
+                <div class="product-image" style="cursor: pointer;" onclick="window.location.href='${window.location.pathname.includes('/pages/') ? '' : 'pages/'}product-detail.html?id=${product.id}'">
                     <img src="${product.image}" alt="${product.name}" loading="lazy">
                 </div>
                 <div class="product-info">
-                    <h3>${product.name}</h3>
+                    <h3 style="cursor: pointer;" onclick="window.location.href='${window.location.pathname.includes('/pages/') ? '' : 'pages/'}product-detail.html?id=${product.id}'">${product.name}</h3>
                     <p>${product.description}</p>
                     <div class="product-price">₹${product.price}</div>
-                    <button class="btn btn-small btn-add-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                    ${addToCartBtn}
                 </div>
             </div>
         </div>
@@ -389,23 +413,42 @@ function renderFeaturedProductCard(product) {
  * @returns {string} HTML string for product card
  */
 function renderProductCard(product) {
+    const quantity = parseInt(product.quantity) || 0;
+    const isOutOfStock = quantity === 0;
+    const isLowStock = quantity > 0 && quantity <= 5;
+
+    // Stock badge HTML
+    let stockBadge = '';
+    if (isOutOfStock) {
+        stockBadge = '<div class="stock-badge out-of-stock">Out of Stock</div>';
+    } else if (isLowStock) {
+        stockBadge = `<div class="stock-badge low-stock">Only ${quantity} left!</div>`;
+    }
+
+    // Disable add to cart if out of stock
+    const addToCartBtn = isOutOfStock
+        ? '<button class="btn btn-small btn-add-cart" disabled style="background: #ccc; cursor: not-allowed;">Out of Stock</button>'
+        : `<button class="btn btn-small btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>`;
+
+    // Disable quantity selector if out of stock
+    const quantitySelector = isOutOfStock
+        ? '<div class="quantity-selector" style="opacity: 0.5; pointer-events: none;"><button class="qty-btn qty-minus" disabled>-</button><input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="1" readonly disabled><button class="qty-btn qty-plus" disabled>+</button></div>'
+        : `<div class="quantity-selector"><button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button><input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${quantity}" readonly><button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button></div>`;
+
     return `
         <div class="swiper-slide">
-            <div class="product-card" data-category="${product.category}">
-                <div class="product-image">
+            <div class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-category="${product.category}">
+                ${stockBadge}
+                <div class="product-image" style="cursor: pointer;" onclick="window.location.href='${window.location.pathname.includes('/pages/') ? '' : 'pages/'}product-detail.html?id=${product.id}'">
                     <img src="${product.image}" alt="${product.name}" loading="lazy">
                 </div>
                 <div class="product-info">
-                    <h3>${product.name}</h3>
+                    <h3 style="cursor: pointer;" onclick="window.location.href='${window.location.pathname.includes('/pages/') ? '' : 'pages/'}product-detail.html?id=${product.id}'">${product.name}</h3>
                     <p>${product.description}</p>
                     <div class="product-price">₹${product.price}</div>
                     <div class="product-actions">
-                        <div class="quantity-selector">
-                            <button class="qty-btn qty-minus" onclick="decrementQty(${product.id})" aria-label="Decrease quantity">-</button>
-                            <input type="number" id="qty-${product.id}" class="qty-input" value="1" min="1" max="${product.quantity || 999}" readonly>
-                            <button class="qty-btn qty-plus" onclick="incrementQty(${product.id})" aria-label="Increase quantity">+</button>
-                        </div>
-                        <button class="btn btn-small btn-add-cart" onclick="addToCartWithQty(${product.id})">Add to Cart</button>
+                        ${quantitySelector}
+                        ${addToCartBtn}
                     </div>
                 </div>
             </div>
