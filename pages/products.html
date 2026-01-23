@@ -272,13 +272,8 @@
                             <div class="desktop-product-info">
                                 <h3 onclick="window.location.href='product-detail.html?id=${product.id}'">${product.name}</h3>
                                 <p>${product.description}</p>
-                                <div class="product-price">₹${product.price}</div>
                                 <div class="product-features">
                                     ${product.features.map(feature => `<span class="feature-tag">${feature}</span>`).join('')}
-                                </div>
-                                <div class="product-actions">
-                                    ${quantitySelector}
-                                    ${addToCartBtn}
                                 </div>
                             </div>
                         </div>`;
