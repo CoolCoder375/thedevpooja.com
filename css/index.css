@@ -25,6 +25,7 @@ main {
     background: linear-gradient(170deg, var(--primary-cyan), var(--primary-green), var(--bg-cream));
     background-size: 200% 200%;
     animation: flowingGradient 8s ease infinite;
+    overflow: hidden;
 }
 
 .hero-overlay::after {

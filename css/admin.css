@@ -94,6 +94,19 @@ body {
     display: none;
 }
 
+/* Google Sign-In Container */
+.google-signin-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.google-signin-container #googleSignInBtn {
+    display: flex;
+    justify-content: center;
+}
+
 /* Admin Panel */
 .admin-panel {
     display: none;

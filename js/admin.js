@@ -2,8 +2,6 @@
 
 // Configuration
 let IMGBB_API_KEY = localStorage.getItem('imgbb_api_key') || '';
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123'; // TODO: Change this!
 
 // Get Apps Script URL from config
 function getAppsScriptUrl() {
@@ -19,40 +17,124 @@ let currentCustomers = [];
 let currentOrders = [];
 let editingProductId = null;
 let ordersLoaded = false;
+let currentUserEmail = null;
 
 // ==========================================
-// LOGIN / LOGOUT
+// Google Auth LOGIN / LOGOUT
 // ==========================================
 
-function handleLogin(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+// Initialize Google Sign-In
+function initializeGoogleSignIn() {
+    if (typeof google === 'undefined' || typeof ADMIN_AUTH_CONFIG === 'undefined') {
+        console.error('Google Identity Services or ADMIN_AUTH_CONFIG not loaded');
+        return;
+    }
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    google.accounts.id.initialize({
+        client_id: ADMIN_AUTH_CONFIG.clientId,
+        callback: handleGoogleSignIn,
+        auto_select: false
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById('googleSignInBtn'),
+        {
+            theme: 'outline',
+            size: 'large',
+            width: 280,
+            text: 'signin_with'
+        }
+    );
+}
+
+// Handle Google Sign-In callback
+function handleGoogleSignIn(response) {
+    // Decode the JWT token to get user info
+    const payload = decodeJwtPayload(response.credential);
+
+    if (!payload || !payload.email) {
+        document.getElementById('loginError').textContent = 'Failed to get email from Google account.';
+        document.getElementById('loginError').style.display = 'block';
+        return;
+    }
+
+    const userEmail = payload.email.toLowerCase();
+    const allowedEmails = ADMIN_AUTH_CONFIG.allowedEmails.map(e => e.toLowerCase());
+
+    // Check if email is in allowed list
+    if (allowedEmails.includes(userEmail)) {
+        // Authorized - grant access
+        currentUserEmail = userEmail;
+        sessionStorage.setItem('adminLoggedIn', 'true');
+        sessionStorage.setItem('adminEmail', userEmail);
+        sessionStorage.setItem('adminName', payload.name || userEmail);
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
-        sessionStorage.setItem('adminLoggedIn', 'true');
         loadDashboard();
     } else {
+        // Not authorized
+        document.getElementById('loginError').textContent = `Access denied. "${userEmail}" is not authorized.`;
         document.getElementById('loginError').style.display = 'block';
+
+        // Sign out from Google to allow trying different account
+        google.accounts.id.disableAutoSelect();    
+    }
+}
+
+// Decode JWT payload (Google credential is a JWT)
+function decodeJwtPayload(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('Failed to decode JWT:', e);
+        return null;
     }
 }
 
 function logout() {
     document.getElementById('loginContainer').style.display = 'flex';
     document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('loginForm').reset();
     sessionStorage.removeItem('adminLoggedIn');
+    sessionStorage.removeItem('adminEmail');
+    sessionStorage.removeItem('adminName');
+    currentUserEmail = null;
+
+    // Disable auto-select so user can choose different account
+    if (typeof google !== 'undefined') {
+        google.accounts.id.disableAutoSelect();
+    }
 }
 
 // Check if already logged in
 window.addEventListener('load', function() {
     if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'block';
-        loadDashboard();
+        const savedEmail = sessionStorage.getItem('adminEmail');
+
+        // Verify email is still in allowed list
+        if (savedEmail && typeof ADMIN_AUTH_CONFIG !== 'undefined') {
+            const allowedEmails = ADMIN_AUTH_CONFIG.allowedEmails.map(e => e.toLowerCase());
+            if (allowedEmails.includes(savedEmail.toLowerCase())) {
+                currentUserEmail = savedEmail;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadDashboard();
+                return;
+            }
+        }
+
+        // Session invalid, clear it
+        sessionStorage.removeItem('adminLoggedIn');
+        sessionStorage.removeItem('adminEmail');
+        sessionStorage.removeItem('adminName');
     }
+
+    // Initialize Google Sign-In button
+    initializeGoogleSignIn();
 });
 
 // ==========================================

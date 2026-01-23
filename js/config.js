@@ -63,3 +63,17 @@ const GA4_CONFIG = {
     // Debug mode (shows events in console)
     debug: false
 };
+
+// Google OAuth Configuration for Admin Panel
+const ADMIN_AUTH_CONFIG = {
+    // Google OAuth Client ID
+    // Get from: Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client IDs
+    // IMPORTANT: Add your domain to "Authorized JavaScript origins"
+    clientId: '655717427904-q86n5m4s5q4ghc6si7n4arf9267ebcdo.apps.googleusercontent.com',  // Replace with your Client ID
+
+    // Allowed email addresses (only these can access admin panel)
+    allowedEmails: [
+        'atharva.deshpande.375@gmail.com',
+        'thedevpooja@gmail.com'
+    ]
+};
