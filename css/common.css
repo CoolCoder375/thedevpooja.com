@@ -6,6 +6,7 @@
     --text-dark: #1a1a1a;
     --bg-cream: #f8fffe;
     --gradient-primary: linear-gradient(135deg, #00bcd4, #4caf50);
+    --gradient-secondary: linear-gradient(45deg, #4caf50, #00bcd4);
     --gradient-subtle: linear-gradient(135deg, rgba(0, 188, 212, 0.5), rgba(76, 175, 80, 0.5));
 }
 
@@ -153,7 +154,7 @@ body {
 }
 
 .btn-secondary {
-    background: transparent;
+    background: var(--gradient-secondary);
     color: var(--bg-cream);
 }
 
