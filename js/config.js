@@ -27,7 +27,9 @@ const RAZORPAY_CONFIG = {
     // Get from: https://dashboard.razorpay.com/app/keys
     // Test Mode: rzp_test_xxxxx (for testing with test cards)
     // Live Mode: rzp_live_xxxxx (after KYC approval)
-    keyId: 'rzp_test_S3gfDCKXmD4STn',  // Add your Razorpay Key ID here
+    
+    // keyId: 'rzp_test_S3gfDCKXmD4STn',  // Added Test Key
+    keyId: 'rzp_live_SA8ii30C3BvBK8',  // Added Live Key
 
     // Business information (displayed in Razorpay checkout modal)
     businessName: 'DevPooja',
