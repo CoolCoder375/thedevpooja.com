@@ -202,6 +202,7 @@ class Checkout {
             name: config.businessName,
             description: config.businessDescription,
             image: config.businessLogo,
+            payment_capture: 1, // Auto-capture payments
 
             // Prefill customer details
             prefill: {

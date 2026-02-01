@@ -37,7 +37,7 @@ const RAZORPAY_CONFIG = {
     businessDescription: 'Premium Pooja Items & Hindu Worship Essentials',
 
     // Theme color for checkout modal
-    themeColor: '#F37254',
+    themeColor: '#0adda5',
 
     // Currency
     currency: 'INR',
